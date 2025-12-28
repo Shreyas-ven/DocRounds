@@ -1,0 +1,60 @@
+.hospital-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #e3f2fd, #bbdefb);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.hospital-container h2 {
+  color: #1976d2;
+  margin-bottom: 5px;
+}
+
+.hospital-container p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.hospital-form {
+  background: white;
+  padding: 30px;
+  width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.hospital-form input,
+.hospital-form textarea,
+.hospital-form select {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.hospital-form label {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #333;
+}
+
+.hospital-form button {
+  margin-top: 20px;
+  padding: 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.hospital-form button:hover {
+  background-color: #0d47a1;
+}

@@ -1,0 +1,109 @@
+.admin-dashboard {
+  padding: 30px;
+  min-height: 100vh;
+  background: linear-gradient(to right, #eef2f7, #f8fafc);
+}
+
+.admin-dashboard h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+/* Section Styling */
+.section {
+  margin-top: 40px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.pending-title {
+  color: #b45309;
+}
+
+.approved-title {
+  color: #065f46;
+}
+
+/* Grid */
+.hospital-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Card */
+.hospital-card {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.hospital-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+}
+
+.hospital-card h3 {
+  font-size: 18px;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+/* Status Badge */
+.status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.status.pending {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.status.approved {
+  background: #bbf7d0;
+  color: #065f46;
+}
+
+/* Buttons */
+.action-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #1d4ed8;
+  transform: scale(1.03);
+}
+
+.approved-btn {
+  background: #16a34a;
+}
+
+.approved-btn:hover {
+  background: #15803d;
+}
+
+/* Empty text */
+.empty-text {
+  font-size: 14px;
+  color: #6b7280;
+}

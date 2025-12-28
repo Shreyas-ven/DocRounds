@@ -1,0 +1,106 @@
+/* ===== PAGE BASE ===== */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(
+      rgba(10, 30, 40, 0.75),
+      rgba(10, 30, 40, 0.75)
+    ),
+    url("../assets/doctor-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px 20px;
+  color: white;
+  animation: fadeIn 1.2s ease;
+}
+
+/* ===== HEADINGS ===== */
+.page-container h1 {
+  font-size: 42px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 12px rgba(0, 180, 216, 0.6);
+}
+
+.page-container p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 30px 40px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+  margin-bottom: 30px;
+  animation: slideUp 1s ease;
+}
+
+.card p {
+  font-size: 17px;
+  margin: 14px 0;
+  color: #e6f7ff;
+}
+
+.card strong {
+  color: #9ee7ff;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+  padding: 12px 26px;
+  border-radius: 30px;
+  border: none;
+  background: #00b4d8;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 18px #00b4d8;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .page-container h1 {
+    font-size: 34px;
+  }
+
+  .card {
+    padding: 25px;
+  }
+}
