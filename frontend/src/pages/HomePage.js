@@ -18,7 +18,8 @@ function HomePage() {
       {/* ===== TOP MENU ===== */}
       <nav className="top-menu">
         <button className="menu-btn">Book Appointment</button>
-        <button className="menu-btn">Insurance Details</button>
+
+        <button className="menu-btn" onClick={() => navigate("/insurance")}> Insurance Details </button>
         <button className="menu-btn">Medicine Details</button>
         <button className="menu-btn">Blood Requirements</button>
         

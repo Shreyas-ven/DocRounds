@@ -1,0 +1,85 @@
+/* ===== PAGE BACKGROUND ===== */
+body {
+  background: linear-gradient(
+    135deg,
+    #020617,
+    #020617,
+    #0f172a,
+    #1e3a8a
+  );
+  background-attachment: fixed;
+}
+
+/* ===== TERMS CONTAINER ===== */
+.terms-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+/* ===== TITLE ===== */
+.terms-container h1 {
+  text-align: center;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+/* ===== LAST UPDATED ===== */
+.last-updated {
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 30px;
+}
+
+/* ===== SECTIONS ===== */
+.terms-section {
+  margin-bottom: 30px;
+}
+
+/* ===== SECTION HEADINGS ===== */
+.terms-section h2 {
+  color: #1d4ed8;
+  margin-bottom: 10px;
+  border-left: 4px solid #2563eb;
+  padding-left: 10px;
+}
+
+/* ===== PARAGRAPHS ===== */
+.terms-section p {
+  line-height: 1.7;
+  color: #334155;
+}
+
+/* ===== LISTS ===== */
+.terms-section ul {
+  padding-left: 20px;
+}
+
+.terms-section ul li {
+  margin-bottom: 8px;
+  color: #334155;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .terms-container {
+    margin: 30px 15px;
+    padding: 30px 20px;
+  }
+}
+
+.terms-container::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  z-index: -1;
+  filter: blur(40px);
+  opacity: 0.3;
+  border-radius: 20px;
+}

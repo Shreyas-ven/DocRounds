@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -12,6 +13,8 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import HospitalActionPage from "./pages/HospitalActionPage";
 import EmergencyContact from "./pages/EmergencyContact";
+import InsurancePage from "./pages/InsurancePage";
+import HospitalDashboard from "./pages/HospitalDashboard";
 
 function App() {
   return (
@@ -29,6 +32,10 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/admin/hospital/:hospitalId"element={<HospitalActionPage />} />
         <Route path="/emergency" element={<EmergencyContact />} />
+        <Route path="/insurance" element={<InsurancePage />} />
+        <Route path="/hospital-dashboard" element={<HospitalDashboard />} />
+
+
       </Routes>
     </BrowserRouter>
   );

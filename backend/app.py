@@ -3,6 +3,8 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timezone
+from werkzeug.security import check_password_hash
+
 import os
 import random
 
@@ -128,6 +130,95 @@ def get_emergency_hospitals():
         )
     )
     return jsonify(hospitals), 200
+
+# -------------------- GET INSURANCE PROVIDERS --------------------
+@app.route("/api/insurance-providers", methods=["GET"])
+def get_insurance_providers():
+    providers = list(mongo.db.insuranceProviders.find({}, {"_id": 0}))
+    return jsonify(providers), 200
+
+# -------------------- HOSPITAL LOGIN --------------------
+@app.route("/api/hospital/login", methods=["POST"])
+def hospital_login():
+    try:
+        data = request.json
+        hospital_id = data.get("hospitalId")
+        password = data.get("password")
+
+        hospital = mongo.db.hospitalLogin.find_one(
+            {"hospital_id": hospital_id}
+        )
+
+        # 1️⃣ Hospital not found
+        if not hospital:
+            return jsonify({
+                "success": False,
+                "message": "Hospital not found. Please register first."
+            }), 404
+
+        # 2️⃣ Not approved
+        if hospital.get("status") != "APPROVED" or not hospital.get("verifiedByAdmin"):
+            return jsonify({
+                "success": False,
+                "message": f"Hospital status: {hospital.get('status')}. Please wait for admin approval."
+            }), 403
+
+        # 3️⃣ Password check
+        if not check_password_hash(hospital["password"], password):
+            return jsonify({
+                "success": False,
+                "message": "Invalid credentials"
+            }), 401
+
+        # 4️⃣ Success
+        return jsonify({
+            "success": True,
+            "message": "Hospital login successful",
+            "hospital_id": hospital["hospital_id"]
+        }), 200
+
+    except Exception as e:
+        print("LOGIN ERROR:", e)
+        return jsonify({
+            "success": False,
+            "message": "Server error"
+        }), 500
+
+
+# -------------------- GET HOSPITAL DETAILS --------------------
+@app.route("/api/hospital/<hospital_id>", methods=["GET"])
+def get_hospital_details(hospital_id):
+    hospital = mongo.db.hospitalLogin.find_one(
+        {"hospital_id": hospital_id},
+        {"_id": 0, "password": 0}  # hide password
+    )
+
+    if not hospital:
+        return jsonify({"message": "Hospital not found"}), 404
+
+    return jsonify(hospital), 200
+
+
+# -------------------- UPDATE HOSPITAL DETAILS --------------------
+@app.route("/api/hospital/update/<hospital_id>", methods=["PUT"])
+def update_hospital(hospital_id):
+    data = request.json
+
+    mongo.db.hospitalLogin.update_one(
+        {"hospital_id": hospital_id},
+        {"$set": {
+            "hospitalName": data.get("hospitalName"),
+            "managerNumber": data.get("managerNumber"),
+            "location": data.get("location"),
+            "icuWards": data.get("icuWards"),
+            "generalWards": data.get("generalWards"),
+            "medicalShop": data.get("medicalShop")
+        }}
+    )
+
+    return jsonify({"message": "Hospital details updated successfully"}), 200
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
