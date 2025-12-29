@@ -38,7 +38,11 @@ function HospitalLoginPage() {
       localStorage.setItem("hospitalId", data.hospitalId);
 
       alert("Hospital login successful");
-      navigate("/hospital-dashboard");
+      if (data.success) {
+        localStorage.setItem("hospitalId", data.hospital_id);
+        navigate("/hospital-dashboard");
+      }
+
 
     } catch (error) {
       setMessage("Server error. Please try again later.");

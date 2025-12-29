@@ -24,7 +24,7 @@
 .page-container h1 {
   font-size: 42px;
   margin-bottom: 12px;
-  text-shadow: 0 0 12px rgba(0, 180, 216, 0.6);
+  text-shadow: 0 0 12px rgba(9, 60, 70, 0.6);
 }
 
 .page-container p {
@@ -49,7 +49,7 @@
 .card p {
   font-size: 17px;
   margin: 14px 0;
-  color: #e6f7ff;
+  color: #00a7f5;
 }
 
 .card strong {

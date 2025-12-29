@@ -202,21 +202,97 @@ def get_hospital_details(hospital_id):
 # -------------------- UPDATE HOSPITAL DETAILS --------------------
 @app.route("/api/hospital/update/<hospital_id>", methods=["PUT"])
 def update_hospital(hospital_id):
-    data = request.json
+    try:
+        data = request.json
 
-    mongo.db.hospitalLogin.update_one(
-        {"hospital_id": hospital_id},
-        {"$set": {
-            "hospitalName": data.get("hospitalName"),
-            "managerNumber": data.get("managerNumber"),
-            "location": data.get("location"),
-            "icuWards": data.get("icuWards"),
-            "generalWards": data.get("generalWards"),
-            "medicalShop": data.get("medicalShop")
-        }}
-    )
+        update_fields = {}
 
-    return jsonify({"message": "Hospital details updated successfully"}), 200
+        allowed_fields = [
+            "hospitalName",
+            "managerNumber",
+            "location",
+            "icuWards",
+            "generalWards",
+            "medicalShop"
+        ]
+
+        for field in allowed_fields:
+            if field in data and data[field] is not None:
+                update_fields[field] = data[field]
+
+        if not update_fields:
+            return jsonify({"message": "No valid fields to update"}), 400
+
+        result = mongo.db.hospitalLogin.update_one(
+            {"hospital_id": hospital_id},
+            {"$set": update_fields}
+        )
+
+        if result.matched_count == 0:
+            return jsonify({"message": "Hospital not found"}), 404
+
+        return jsonify({"message": "Hospital details updated successfully"}), 200
+
+    except Exception as e:
+        print("UPDATE ERROR:", e)
+        return jsonify({"message": "Server error"}), 500
+
+
+# -------------------- ADD DOCTOR --------------------
+@app.route("/api/hospital/<hospital_id>/add-doctor", methods=["POST"])
+def add_doctor(hospital_id):
+    try:
+        data = request.json
+
+        doctor = {
+            "hospital_id": hospital_id,
+            "name": data.get("name"),
+            "qualification": data.get("qualification"),
+            "specialty": data.get("specialty"),
+            "experience": data.get("experience"),
+            "languages": data.get("languages"),
+            "credentials": data.get("credentials"),
+            "createdAt": datetime.now(timezone.utc)
+        }
+
+        result = mongo.db.doctors.insert_one(doctor)
+
+        doctor["_id"] = str(result.inserted_id)
+
+        return jsonify({
+            "message": "Doctor added successfully",
+            "doctor": doctor
+        }), 201
+
+    except Exception as e:
+        print("ADD DOCTOR ERROR:", e)
+        return jsonify({"message": "Server error"}), 500
+
+# -------------------- GET DOCTORS --------------------
+@app.route("/api/hospital/<hospital_id>/doctors", methods=["GET"])
+def get_doctors(hospital_id):
+    try:
+        limit = int(request.args.get("limit", 0))
+
+        cursor = mongo.db.doctors.find(
+            {"hospital_id": hospital_id},
+            {"hospital_id": 0}
+        ).sort("createdAt", -1)
+
+        if limit > 0:
+            cursor = cursor.limit(limit)
+
+        doctors = []
+        for doc in cursor:
+            doc["_id"] = str(doc["_id"])
+            doctors.append(doc)
+
+        return jsonify(doctors), 200
+
+    except Exception as e:
+        print("GET DOCTORS ERROR:", e)
+        return jsonify([]), 500
+
 
 
 
