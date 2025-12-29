@@ -21,7 +21,9 @@ function HomePage() {
         <button className="menu-btn">Insurance Details</button>
         <button className="menu-btn">Medicine Details</button>
         <button className="menu-btn">Blood Requirements</button>
-        <button className="menu-btn">Emergency Contact</button>
+        
+        <button className="menu-btn" onClick={() => navigate("/emergency")}> Emergency Contact </button>
+
       </nav>
 
       {/* ===== HERO SECTION ===== */}

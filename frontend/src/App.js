@@ -11,6 +11,7 @@ import HospitalRegisterPage from "./pages/HospitalRegisterPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import HospitalActionPage from "./pages/HospitalActionPage";
+import EmergencyContact from "./pages/EmergencyContact";
 
 function App() {
   return (
@@ -26,10 +27,8 @@ function App() {
 
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route
-          path="/admin/hospital/:hospitalId"
-          element={<HospitalActionPage />}
-        />
+        <Route path="/admin/hospital/:hospitalId"element={<HospitalActionPage />} />
+        <Route path="/emergency" element={<EmergencyContact />} />
       </Routes>
     </BrowserRouter>
   );

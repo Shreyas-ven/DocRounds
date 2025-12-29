@@ -118,5 +118,16 @@ def delete_hospital(hospital_id):
     return jsonify({"message": "Hospital deleted"}), 200
 
 
+# -------------------- GET EMERGENCY HOSPITALS --------------------
+@app.route("/api/emergency/hospitals", methods=["GET"])
+def get_emergency_hospitals():
+    hospitals = list(
+        mongo.db.emergencyHospitals.find(
+            {},
+            {"_id": 0}
+        )
+    )
+    return jsonify(hospitals), 200
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
