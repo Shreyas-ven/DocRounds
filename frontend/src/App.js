@@ -15,6 +15,7 @@ import HospitalActionPage from "./pages/HospitalActionPage";
 import EmergencyContact from "./pages/EmergencyContact";
 import InsurancePage from "./pages/InsurancePage";
 import HospitalDashboard from "./pages/HospitalDashboard";
+import PatientManagement from "./pages/PatientManagement";
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
         <Route path="/emergency" element={<EmergencyContact />} />
         <Route path="/insurance" element={<InsurancePage />} />
         <Route path="/hospital-dashboard" element={<HospitalDashboard />} />
+       <Route path="/hospital/:hospitalId/patient-management" element={<PatientManagement />}/>
+
 
 
       </Routes>

@@ -4,6 +4,7 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timezone
 from werkzeug.security import check_password_hash
+from bson import ObjectId
 
 import os
 import random
@@ -294,6 +295,30 @@ def get_doctors(hospital_id):
         return jsonify([]), 500
 
 
+# -------------------- UPDATE DOCTOR --------------------
+@app.route("/api/doctor/update/<doctor_id>", methods=["PUT"])
+def update_doctor(doctor_id):
+    data = request.json
+
+    mongo.db.doctors.update_one(
+        {"_id": ObjectId(doctor_id)},
+        {"$set": {
+            "name": data.get("name"),
+            "qualification": data.get("qualification"),
+            "specialty": data.get("specialty"),
+            "experience": data.get("experience"),
+            "languages": data.get("languages"),
+            "credentials": data.get("credentials")
+        }}
+    )
+
+    return jsonify({"message": "Doctor updated successfully"}), 200
+
+# -------------------- DELETE DOCTOR --------------------
+@app.route("/api/doctor/delete/<doctor_id>", methods=["DELETE"])
+def delete_doctor(doctor_id):
+    mongo.db.doctors.delete_one({"_id": ObjectId(doctor_id)})
+    return jsonify({"message": "Doctor deleted successfully"}), 200
 
 
 if __name__ == "__main__":

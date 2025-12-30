@@ -38,6 +38,9 @@ function HospitalDashboard() {
     credentials: ""
   });
 
+  
+
+
   // ================= FETCH HOSPITAL =================
   useEffect(() => {
     if (!hospitalId) return;
@@ -89,6 +92,17 @@ function HospitalDashboard() {
   const updateDoctor = (doctorId) => {
     navigate(`/doctor/update/${doctorId}`);
   };
+
+  const deleteDoctor = async (doctorId) => {
+  if (!window.confirm("Are you sure you want to delete this doctor?")) return;
+
+  await fetch(`http://localhost:5000/api/doctor/delete/${doctorId}`, {
+    method: "DELETE"
+  });
+
+  setDoctors(prev => prev.filter(doc => doc._id !== doctorId));
+};
+
 
   const handleDoctorChange = (e) => {
     setDoctorForm({ ...doctorForm, [e.target.name]: e.target.value });
@@ -220,13 +234,16 @@ function HospitalDashboard() {
             {doctors.map(doc => (
               <div key={doc._id} className="card">
                 <h3>{doc.name}</h3>
+                <br></br>
                 <p>Qualification: {doc.qualification}</p>
                 <p>Specialty: {doc.specialty}</p>
                 <p>Experience: {doc.experience} years</p>
-                <p>Languages: {doc.languages}</p>
+                <p>Languages: {doc.languages}</p> <br></br>
                 <button className="small-btn" onClick={() => updateDoctor(doc._id)}>
                   Update Doctor
-                </button>
+                </button> <br></br>
+                <button className="danger-btn" onClick={() => deleteDoctor(doc._id)}> Delete Doctor</button>
+
               </div>
             ))}
           </div>
@@ -238,7 +255,7 @@ function HospitalDashboard() {
         <h2 className="section-title">Manage Patients</h2>
         <button
           className="update-btn"
-          onClick={() => navigate(`/hospital/${hospitalId}/patients`)}
+          onClick={() => navigate(`/hospital/${hospitalId}/patient-management`)}
         >
           Go to Patient Management
         </button>
