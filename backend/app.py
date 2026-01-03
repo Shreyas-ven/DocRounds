@@ -321,5 +321,87 @@ def delete_doctor(doctor_id):
     return jsonify({"message": "Doctor deleted successfully"}), 200
 
 
+
+# ================= BLOOD REQUIREMENTS =================
+
+# -------------------- ADD BLOOD REQUIREMENT --------------------
+@app.route("/api/blood/<hospital_id>/add", methods=["POST"])
+def add_blood_requirement(hospital_id):
+    try:
+        data = request.json
+
+        hospital = mongo.db.hospitalLogin.find_one(
+            {"hospital_id": hospital_id},
+            {"hospitalName": 1}
+        )
+
+        blood = {
+            "hospital_id": hospital_id,
+            "hospitalName": hospital.get("hospitalName"),
+            "patientName": data.get("patientName"),
+            "patientId": data.get("patientId"),
+            "disease": data.get("disease"),
+            "bloodType": data.get("bloodType"),
+            "units": data.get("units"),
+            "requiredBeforedate": data.get("requiredBeforedate"),
+            "requiredBeforetime": data.get("requiredBeforetime"),
+            "donorName": "",
+            "status": "OPEN",
+            "createdAt": datetime.now(timezone.utc)
+        }
+
+        result = mongo.db.bloodRequirements.insert_one(blood)
+        blood["_id"] = str(result.inserted_id)
+
+        return jsonify(blood), 201
+
+    except Exception as e:
+        print("ADD BLOOD ERROR:", e)
+        return jsonify({"message": "Server error"}), 500
+
+
+# -------------------- GET BLOOD REQUIREMENTS --------------------
+@app.route("/api/blood/<hospital_id>", methods=["GET"])
+def get_blood_requirements(hospital_id):
+    try:
+        data = mongo.db.bloodRequirements.find(
+            {"hospital_id": hospital_id}
+        ).sort("createdAt", -1)
+
+        result = []
+        for d in data:
+            d["_id"] = str(d["_id"])
+            result.append(d)
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        print("GET BLOOD ERROR:", e)
+        return jsonify([]), 500
+
+
+# -------------------- CLOSE BLOOD REQUIREMENT --------------------
+@app.route("/api/blood/close/<blood_id>", methods=["PUT"])
+def close_blood_requirement(blood_id):
+    mongo.db.bloodRequirements.update_one(
+        {"_id": ObjectId(blood_id)},
+        {"$set": {"status": "CLOSED"}}
+    )
+
+    return jsonify({"message": "Blood requirement closed"}), 200
+
+
+# -------------------- DELETE BLOOD REQUIREMENT --------------------
+@app.route("/api/blood/delete/<blood_id>", methods=["DELETE"])
+def delete_blood_requirement(blood_id):
+    mongo.db.bloodRequirements.delete_one(
+        {"_id": ObjectId(blood_id)}
+    )
+
+    return jsonify({"message": "Blood requirement deleted"}), 200
+
+
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

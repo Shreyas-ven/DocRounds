@@ -1,0 +1,104 @@
+/* ===== MAIN CONTAINER ===== */
+.blood-container {
+  padding: 30px;
+  max-width: 1700px;
+  margin: auto;
+}
+
+/* Page title */
+.blood-container h1 {
+  text-align: center;
+  white-space: nowrap;
+  color:#ffffff
+}
+
+/* ===== ADD FORM (CENTERED) ===== */
+.blood-container > .blood-card:first-of-type {
+  max-width: 500px;
+  margin: 0 auto 40px auto;
+}
+
+/* ===== REQUIREMENTS GRID (LEFT ALIGNED) ===== */
+.blood-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Ensure form stays full width */
+.blood-container > .blood-card:first-of-type {
+  grid-column: 1 / -1;
+}
+
+/* ===== BLOOD CARD ===== */
+.blood-card {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+}
+
+/* Card title */
+.blood-card h3 {
+  margin-bottom: 10px;
+  color: #c0392b;
+  font-size: 15px;
+}
+
+/* Inputs */
+.blood-card input {
+  width: 90%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Buttons */
+.blood-card button {
+  padding: 7px 12px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 13px;
+}
+
+.blood-card button:hover {
+  background: #c0392b;
+}
+
+/* Delete button */
+.danger-btn {
+  background: #555;
+}
+
+.danger-btn:hover {
+  background: #333;
+}
+
+/* Text spacing */
+.blood-card p {
+  margin: 4px 0;
+}
+
+
+.blood-select {
+  width: 94%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.blood-select:focus {
+  outline: none;
+  border-color: #e74c3c;
+}

@@ -155,7 +155,7 @@ function HospitalDashboard() {
       <div className="scrolling-text-container">
         <p className="scrolling-text">
           Hospital management is responsible for the doctors list, verify the
-          certificate before adding to the website and the DocRounds community
+          doctor's certificate before adding to the website and the DocRounds community
           will not be responsible for the unfair decision made by the hospital
           management.
         </p>
@@ -259,6 +259,15 @@ function HospitalDashboard() {
         >
           Go to Patient Management
         </button>
+
+        <h2 className="section-title">Post Blood Requirements </h2>
+        <button
+          className="blood_bank-btn"
+          onClick={() => navigate(`/hospital/${hospitalId}/blood-requirements`)}
+        >
+          Go to Blood Requirement Management
+        </button>
+
       </section>
 
     </div>
