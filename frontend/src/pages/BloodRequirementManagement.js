@@ -85,7 +85,7 @@ function BloodRequirementManagement() {
         <input name="patientName" placeholder="Patient Name" value={form.patientName} onChange={handleChange} />
         <input name="patientId" placeholder="Patient ID" value={form.patientId} onChange={handleChange} />
         <input name="disease" placeholder="Disease" value={form.disease} onChange={handleChange} />
-        <input name="units" placeholder="Units Required" value={form.units} onChange={handleChange} />
+        <input name="units" placeholder="Units Required" value={form.units} onChange={handleChange} /> <br></br><br></br>
         <select
              name="bloodType"
              value={form.bloodType}

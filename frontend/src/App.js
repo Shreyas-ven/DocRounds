@@ -17,6 +17,7 @@ import InsurancePage from "./pages/InsurancePage";
 import HospitalDashboard from "./pages/HospitalDashboard";
 import PatientManagement from "./pages/PatientManagement";
 import BloodRequirementManagement from "./pages/BloodRequirementManagement";
+import BloodBankDashboard from "./pages/BloodBankDashboard";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/patient-login" element={<PatientLoginPage />} />
         <Route path="/hospital-login" element={<HospitalLoginPage />} />
         <Route path="/hospital-register" element={<HospitalRegisterPage />} />
+        <Route path="/blood-bank-dashboard" element={<BloodBankDashboard />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermsPage />} />
 

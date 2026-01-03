@@ -1,0 +1,66 @@
+.patient-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+}
+
+.patient-container h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 30px;
+}
+
+.patient-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  margin-bottom: 30px;
+}
+
+.patient-card h2 {
+  color: #c0392b;
+  margin-bottom: 15px;
+}
+
+.patient-card input,
+.patient-card select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.patient-card p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.patient-card button {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.patient-card button:hover {
+  background: #c0392b;
+}
+
+/* Danger Section */
+.patient-card.danger {
+  border: 2px solid #e74c3c;
+}
+
+.danger-btn {
+  background: #555;
+}
+
+.danger-btn:hover {
+  background: #333;
+}

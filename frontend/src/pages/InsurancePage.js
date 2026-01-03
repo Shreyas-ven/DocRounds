@@ -19,8 +19,7 @@ function InsurancePage() {
       <div className="insurance-grid">
         {providers.map((p, index) => (
           <div className="insurance-card" key={index}>
-            <h3>{p.providerName}</h3>
-            <p><strong>Type:</strong> {p.type}</p>
+            <h3>{p.companyName}</h3>
             <p><strong>Contact:</strong> {p.phone}</p>
             <a
               href={p.website}

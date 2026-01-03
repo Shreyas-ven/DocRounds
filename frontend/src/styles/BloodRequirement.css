@@ -1,7 +1,7 @@
 /* ===== MAIN CONTAINER ===== */
 .blood-container {
   padding: 30px;
-  max-width: 1700px;
+  max-width: 1600px;
   margin: auto;
 }
 
@@ -48,7 +48,7 @@
 
 /* Inputs */
 .blood-card input {
-  width: 90%;
+  width: 70%;
   padding: 8px;
   margin-bottom: 8px;
   border-radius: 6px;
@@ -84,11 +84,12 @@
 /* Text spacing */
 .blood-card p {
   margin: 4px 0;
+  color:#ccc
 }
 
 
 .blood-select {
-  width: 94%;
+  width: 104%;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 6px;
@@ -102,3 +103,4 @@
   outline: none;
   border-color: #e74c3c;
 }
+

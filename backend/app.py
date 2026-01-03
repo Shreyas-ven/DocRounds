@@ -9,6 +9,10 @@ from bson import ObjectId
 import os
 import random
 
+PATIENT_UPLOAD = "patient_uploads"
+os.makedirs(PATIENT_UPLOAD, exist_ok=True)
+
+
 app = Flask(__name__)
 CORS(app)
 
@@ -332,12 +336,16 @@ def add_blood_requirement(hospital_id):
 
         hospital = mongo.db.hospitalLogin.find_one(
             {"hospital_id": hospital_id},
-            {"hospitalName": 1}
-        )
+            {"hospitalName": 1,
+                "managerNumber": 1,
+                "location": 1,
+        })
 
         blood = {
             "hospital_id": hospital_id,
             "hospitalName": hospital.get("hospitalName"),
+            "hospitalLocation": hospital.get("location"),      
+            "managerNumber": hospital.get("managerNumber"),
             "patientName": data.get("patientName"),
             "patientId": data.get("patientId"),
             "disease": data.get("disease"),
@@ -360,12 +368,12 @@ def add_blood_requirement(hospital_id):
         return jsonify({"message": "Server error"}), 500
 
 
-# -------------------- GET BLOOD REQUIREMENTS --------------------
-@app.route("/api/blood/<hospital_id>", methods=["GET"])
-def get_blood_requirements(hospital_id):
+# -------------------- GET ALL BLOOD REQUIREMENTS (PUBLIC) --------------------
+@app.route("/api/blood/all", methods=["GET"])
+def get_all_blood_requirements():
     try:
         data = mongo.db.bloodRequirements.find(
-            {"hospital_id": hospital_id}
+            {"status": "OPEN"}  # optional filter
         ).sort("createdAt", -1)
 
         result = []
@@ -376,8 +384,9 @@ def get_blood_requirements(hospital_id):
         return jsonify(result), 200
 
     except Exception as e:
-        print("GET BLOOD ERROR:", e)
+        print("GET ALL BLOOD ERROR:", e)
         return jsonify([]), 500
+
 
 
 # -------------------- CLOSE BLOOD REQUIREMENT --------------------
@@ -400,6 +409,84 @@ def delete_blood_requirement(blood_id):
 
     return jsonify({"message": "Blood requirement deleted"}), 200
 
+
+# -------------------- UPDATE DONOR DETAILS --------------------
+@app.route("/api/blood/donate/<blood_id>", methods=["PUT"])
+def update_donor_details(blood_id):
+    try:
+        data = request.json
+
+        mongo.db.bloodRequirements.update_one(
+            {"_id": ObjectId(blood_id)},
+            {
+                "$set": {
+                    "donorName": data.get("donorName"),
+                    "donorContact": data.get("donorContact"),
+                    "status": "Donar Assigned"
+                }
+            }
+        )
+
+        return jsonify({"message": "Donor details updated"}), 200
+
+    except Exception as e:
+        print("DONOR UPDATE ERROR:", e)
+        return jsonify({"message": "Server error"}), 500
+
+
+@app.route("/api/patient/admit", methods=["POST"])
+def admit_patient():
+    try:
+        data = request.form
+
+        patient = {
+            "patientId": data.get("patientId"),
+            "patientName": data.get("patientName"),
+            "disease": data.get("disease"),
+            "branch": data.get("branch"),
+            "doctorId": data.get("doctorId"),
+            "guardianNumber": data.get("guardianNumber"),
+            "wardNumber": data.get("wardNumber"),
+            "insuranceClaim": data.get("insuranceClaim"),
+            "totalFees": data.get("totalFees"),
+            "paidFees": data.get("paidFees"),
+            "balance": data.get("balance"),
+            "createdAt": datetime.now(timezone.utc)
+        }
+
+        # Handle patient image
+        image = request.files.get("patientImage")
+        if image:
+            image_path = os.path.join(PATIENT_UPLOAD, image.filename)
+            image.save(image_path)
+            patient["patientImage"] = image.filename
+
+        mongo.db.patients.insert_one(patient)
+
+        return jsonify({"message": "Patient admitted successfully"}), 201
+
+    except Exception as e:
+        print("ADMIT PATIENT ERROR:", e)
+        return jsonify({"message": "Server error"}), 500
+
+@app.route("/api/patient/all", methods=["GET"])
+def get_all_patients():
+    patients = []
+    for p in mongo.db.patients.find():
+        p["_id"] = str(p["_id"])
+        patients.append(p)
+    return jsonify(patients), 200
+
+@app.route("/api/patient/discharge/<patient_id>", methods=["DELETE"])
+def discharge_patient(patient_id):
+    result = mongo.db.patients.delete_one(
+        {"patientId": patient_id}
+    )
+
+    if result.deleted_count == 0:
+        return jsonify({"message": "Patient not found"}), 404
+
+    return jsonify({"message": "Patient discharged successfully"}), 200
 
 
 

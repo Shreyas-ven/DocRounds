@@ -21,7 +21,7 @@ function HomePage() {
 
         <button className="menu-btn" onClick={() => navigate("/insurance")}> Insurance Details </button>
         <button className="menu-btn">Medicine Details</button>
-        <button className="menu-btn">Blood Requirements</button>
+        <button className="menu-btn" onClick={() => navigate("/blood-bank-dashboard")}>Blood Requirements</button>
         
         <button className="menu-btn" onClick={() => navigate("/emergency")}> Emergency Contact </button>
 
