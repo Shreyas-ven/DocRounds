@@ -119,7 +119,7 @@ function PatientManagement() {
 
         <input
           name="doctorId"
-          placeholder="Doctor ID (DOCT-123456)"
+          placeholder="Doctor ID (DOCT-123456) - DOCTOR INCHARGE"
           value={patient.doctorId}
           onChange={handleChange}
         />

@@ -120,12 +120,16 @@ function HospitalDashboard() {
 
     const data = await res.json();
 
+
+   
+
     // show new doctor instantly
     setDoctors([data.doctor, ...doctors]);
 
     setDoctorForm({
       name: "",
       qualification: "",
+      password: "",
       specialty: "",
       experience: "",
       languages: "",
@@ -221,6 +225,9 @@ function HospitalDashboard() {
             <label>Credentials / Awards</label>
             <input name="credentials" value={doctorForm.credentials} onChange={handleDoctorChange} />
 
+            <label>Temporary Password</label>
+            <input name="password" type="password" value={doctorForm.password} onChange={handleDoctorChange} />
+
             <button className="update-btn" onClick={saveDoctor}>
               Save Doctor
             </button>
@@ -235,6 +242,7 @@ function HospitalDashboard() {
               <div key={doc._id} className="card">
                 <h3>{doc.name}</h3>
                 <br></br>
+                 <p><strong>Doctor ID:</strong> {doc.doctorId}</p>
                 <p>Qualification: {doc.qualification}</p>
                 <p>Specialty: {doc.specialty}</p>
                 <p>Experience: {doc.experience} years</p>

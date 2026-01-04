@@ -243,13 +243,19 @@ def update_hospital(hospital_id):
         return jsonify({"message": "Server error"}), 500
 
 
+# Generate Doctor ID
+def generate_doctor_id():
+    return f"DOC-{random.randint(100000, 999999)}"
+
 # -------------------- ADD DOCTOR --------------------
 @app.route("/api/hospital/<hospital_id>/add-doctor", methods=["POST"])
 def add_doctor(hospital_id):
     try:
         data = request.json
+        doctor_id = generate_doctor_id()
 
         doctor = {
+             "doctorId": doctor_id, 
             "hospital_id": hospital_id,
             "name": data.get("name"),
             "qualification": data.get("qualification"),
@@ -257,6 +263,7 @@ def add_doctor(hospital_id):
             "experience": data.get("experience"),
             "languages": data.get("languages"),
             "credentials": data.get("credentials"),
+            "password": generate_password_hash(data.get("password")),
             "createdAt": datetime.now(timezone.utc)
         }
 
@@ -487,6 +494,50 @@ def discharge_patient(patient_id):
         return jsonify({"message": "Patient not found"}), 404
 
     return jsonify({"message": "Patient discharged successfully"}), 200
+
+
+# -------------------- DOCTOR LOGIN --------------------
+@app.route("/api/doctor/login", methods=["POST"])
+def doctor_login():
+    try:
+        data = request.json
+        doctor_id = data.get("doctorId")
+        password = data.get("password")
+
+        doctor = mongo.db.doctors.find_one(
+            {"doctorId": doctor_id}
+        )
+
+        # 1️⃣ Doctor not found
+        if not doctor:
+            return jsonify({
+                "success": False,
+                "message": "Doctor not found"
+            }), 404
+
+        # 2️⃣ Password check
+        if not check_password_hash(doctor["password"], password):
+            return jsonify({
+                "success": False,
+                "message": "Invalid password"
+            }), 401
+
+        # 3️⃣ Success
+        return jsonify({
+            "success": True,
+            "message": "Doctor login successful",
+            "doctorId": doctor["doctorId"],
+            "doctorMongoId": str(doctor["_id"]),
+            "hospitalId": doctor["hospital_id"],
+            "name": doctor["name"]
+        }), 200
+
+    except Exception as e:
+        print("DOCTOR LOGIN ERROR:", e)
+        return jsonify({
+            "success": False,
+            "message": "Server error"
+        }), 500
 
 
 
