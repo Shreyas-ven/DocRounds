@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/DoctorDashboard.css";
 
@@ -9,12 +9,100 @@ function DoctorDashboard() {
   const doctorId = localStorage.getItem("doctorId");
   const hospitalId = localStorage.getItem("hospitalId");
 
+  const [patients, setPatients] = useState([]);
+
+  const [showReport, setShowReport] = useState(null);
+  const [showMedical, setShowMedical] = useState(null);
+  const [showWardShift, setShowWardShift] = useState(null);
+
+  const [reportText, setReportText] = useState("");
+  const [reportTime, setReportTime] = useState("Morning");
+
+  const [medicalItem, setMedicalItem] = useState("");
+  const [medicalTime, setMedicalTime] = useState("");
+
+  const [newWard, setNewWard] = useState("");
+
+
+
+
+
   // 🔐 Protect route
   useEffect(() => {
     if (!doctorId) {
       navigate("/doctor-login");
     }
   }, [doctorId, navigate]);
+
+  // 📥 Fetch ONLY patients linked to this doctor
+  useEffect(() => {
+    if (!doctorId) return;
+
+    fetch(`http://localhost:5000/api/doctor/${doctorId}/patients`)
+      .then(res => res.json())
+      .then(data => {
+        setPatients(data);
+      })
+      .catch(err => console.error("Error fetching patients:", err));
+  }, [doctorId]);
+
+// 📝 Save Round Report
+const saveRoundReport = (patientId) => {
+  fetch("http://localhost:5000/api/patient/round-report", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      patientId,
+      doctorId,
+      reportText,
+      reportTime
+    })
+  }).then(() => {
+    alert("Round report sent");
+    setShowReport(null);
+    setReportText("");
+  });
+};
+
+// 💊 Medical Requirements
+const sendMedicalReq = (patientId) => {
+  fetch("http://localhost:5000/api/patient/medical-requirement", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      patientId,
+      doctorId,
+      medicalItem,
+      medicalTime
+    })
+  }).then(() => {
+    alert("Medical requirement sent");
+    setShowMedical(null);
+    setMedicalItem("");
+  });
+};
+
+// 🏥 Shift Ward
+const shiftWard = (patientId) => {
+  fetch("http://localhost:5000/api/patient/shift-ward", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      patientId,
+      newWard
+    })
+  }).then(() => {
+    alert("Ward updated");
+    setShowWardShift(null);
+    setNewWard("");
+  });
+};
+
+
+
+
+
+
 
   const handleLogout = () => {
     localStorage.clear();
@@ -38,27 +126,91 @@ function DoctorDashboard() {
         <p><strong>Hospital ID:</strong> {hospitalId}</p>
       </div>
 
-      {/* Dashboard Cards */}
-      <div className="dashboard-cards">
-        <div className="card">
-          <h4>My Patients</h4>
-          <p>View assigned patients</p>
-        </div>
+      {/* My Patients */}
+      <div className="patients-section">
+        <h3>My Patients</h3>
 
-        <div className="card">
-          <h4>Appointments</h4>
-          <p>Today's schedule</p>
-        </div>
+        {patients.length === 0 ? (
+          <p>No patients assigned to you.</p>
+        ) : (
+          <div className="patients-grid">
+            {patients.map(patient => (
+              <div className="patient-card" key={patient._id}>
+                <h4>{patient.patientName}</h4>
+                <p><strong>Patient ID:</strong> {patient.patientId}</p>
+                <p><strong>Disease:</strong> {patient.disease}</p>
+                <p><strong>Branch:</strong> {patient.branch}</p>
+                <p><strong>Ward No:</strong> {patient.wardNumber || "N/A"}</p>
+                <p><strong>Parent/Family/Guardian Phone:</strong> {patient.guardianNumber}</p>
+                <p><strong>Total Fees:</strong> ₹{patient.totalFees || 0}</p>
+                <p><strong>Paid:</strong> ₹{patient.paidFees || 0}</p>
+                <p><strong>Balance:</strong> ₹{patient.balance || 0}</p>
 
-        <div className="card">
-          <h4>Medical Reports</h4>
-          <p>View & upload reports</p>
-        </div>
+                <hr />
 
-        <div className="card">
-          <h4>Profile</h4>
-          <p>View doctor profile</p>
-        </div>
+<button onClick={() => setShowReport(patient.patientId)}>
+  Update Round Report
+</button>
+
+{showReport === patient.patientId && (
+  <>
+    <select onChange={(e) => setReportTime(e.target.value)}>
+      <option>Morning</option>
+      <option>Evening</option>
+      <option>Emergency</option>
+    </select>
+
+    <textarea
+      placeholder="Write report..."
+      onChange={(e) => setReportText(e.target.value)}
+    />
+
+    <button onClick={() => saveRoundReport(patient.patientId)}>
+      Save & Send
+    </button>
+  </>
+)}
+
+<button onClick={() => setShowMedical(patient.patientId)}>
+  Medical Requirements
+</button>
+
+{showMedical === patient.patientId && (
+  <>
+    <input
+      placeholder="Equipment / Medicine name"
+      onChange={(e) => setMedicalItem(e.target.value)}
+    />
+    <input
+      placeholder="Within (Timings)"
+      onChange={(e) => setMedicalTime(e.target.value)}
+    />
+    <button onClick={() => sendMedicalReq(patient.patientId)}>
+      Send
+    </button>
+  </>
+)}
+
+<button onClick={() => setShowWardShift(patient.patientId)}>
+  Shift Ward
+</button>
+
+{showWardShift === patient.patientId && (
+  <>
+    <input
+      placeholder="New Ward / ICU Number"
+      onChange={(e) => setNewWard(e.target.value)}
+    />
+    <button onClick={() => shiftWard(patient.patientId)}>
+      Update Ward
+    </button>
+  </>
+)}
+
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

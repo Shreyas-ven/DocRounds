@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from twilio.rest import Client
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash
@@ -12,6 +13,12 @@ import random
 PATIENT_UPLOAD = "patient_uploads"
 os.makedirs(PATIENT_UPLOAD, exist_ok=True)
 
+
+TWILIO_ACCOUNT_SID = "ACcb4a2ed0a65a755180f89365e1488d15" 
+TWILIO_AUTH_TOKEN = "4a29e03e1e2143bbcf1c1d8c18ae1350"
+TWILIO_PHONE_NUMBER = "+19473334772"
+
+twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 app = Flask(__name__)
 CORS(app)
@@ -538,6 +545,176 @@ def doctor_login():
             "success": False,
             "message": "Server error"
         }), 500
+
+
+# -------------------- GET PATIENTS BY DOCTOR --------------------
+@app.route("/api/doctor/<doctor_id>/patients", methods=["GET"])
+def get_patients_by_doctor(doctor_id):
+    try:
+        patients = []
+
+        cursor = mongo.db.patients.find(
+            {"doctorId": doctor_id}
+        ).sort("createdAt", -1)
+
+        for p in cursor:
+            p["_id"] = str(p["_id"])
+            patients.append(p)
+
+        return jsonify(patients), 200
+
+    except Exception as e:
+        print("GET DOCTOR PATIENTS ERROR:", e)
+        return jsonify([]), 500
+
+
+#--------------------Docortor Dashboard Stats--------------------
+#--------------------ROUNDS REPORT--------------------
+@app.route("/api/patient/round-report", methods=["POST"])
+def round_report():
+    data = request.json
+
+    patientId = data.get("patientId")
+    doctorId = data.get("doctorId")
+    reportText = data.get("reportText")
+    reportTime = data.get("reportTime")
+
+    # 🔍 Fetch patient
+    patient = mongo.db.patients.find_one({"patientId": patientId})
+    if not patient:
+        return jsonify({"message": "Patient not found"}), 404
+
+    # 🔍 Fetch doctor
+    doctor = mongo.db.doctors.find_one({"doctorId": doctorId})
+    if not doctor:
+        return jsonify({"message": "Doctor not found"}), 404
+
+    guardianNumber = patient.get("guardianNumber")
+
+    # 🇮🇳 Convert to E.164 format
+    if guardianNumber and not guardianNumber.startswith("+91"):
+        guardianNumber = "+91" + guardianNumber
+
+    # 📦 Save report in DB
+    report_doc = {
+        "patientId": patientId,
+        "patientName": patient.get("patientName", ""),
+        "guardianNumber": guardianNumber,
+        "doctorId": doctorId,
+        "doctorName": doctor.get("name", ""),
+        "report": reportText,
+        "time": reportTime,
+        "createdAt": datetime.now(timezone.utc)
+    }
+
+    mongo.db.round_reports.insert_one(report_doc)
+
+    # 📩 SMS MESSAGE FORMAT
+    sms_message = f"""
+    DocRounds – Patient Update
+
+    ID: {patientId}
+    Patient Name: {patient.get('patientName')}
+    Doctor: Dr. {doctor.get('name')}
+    Round Time: {reportTime}
+    Feedback: {reportText}
+
+    Thank you.
+    """
+
+    # 📤 Send SMS via Twilio
+    try:
+        twilio_client.messages.create(
+            body=sms_message,
+            from_=TWILIO_PHONE_NUMBER,
+            to=guardianNumber
+        )
+    except Exception as e:
+        print("Twilio SMS Error:", e)
+
+    return jsonify({"message": "Report saved & SMS sent"}), 201
+
+
+
+#--------------------Medical Requirement-------------
+@app.route("/api/patient/medical-requirement", methods=["POST"])
+def medical_requirement():
+    data = request.json
+
+    patientId = data.get("patientId")
+    doctorId = data.get("doctorId")
+    medicalItem = data.get("medicalItem")
+    medicalTime = data.get("medicalTime")
+
+    # 🔍 Fetch patient
+    patient = mongo.db.patients.find_one({"patientId": patientId})
+    if not patient:
+        return jsonify({"message": "Patient not found"}), 404
+
+    # 🔍 Fetch doctor
+    doctor = mongo.db.doctors.find_one({"doctorId": doctorId})
+    if not doctor:
+        return jsonify({"message": "Doctor not found"}), 404
+
+    guardian_number = patient.get("guardianNumber", "")
+    doctor_name = doctor.get("name", "")
+    patient_name = patient.get("patientName", "")
+
+    # 📦 Save to DB
+    medical_doc = {
+        "patientId": patientId,
+        "patientName": patient_name,
+        "guardianNumber": guardian_number,
+
+        "doctorId": doctorId,
+        "doctorName": doctor_name,
+
+        "item": medicalItem,
+        "within": medicalTime,
+        "status": "PENDING",
+        "createdAt": datetime.now(timezone.utc)
+    }
+
+    mongo.db.medical_requirements.insert_one(medical_doc)
+
+    # 📲 SHORT SMS MESSAGE (India Safe)
+    sms_message = (
+        f"DocRounds Alert - Medical Requirement \n"
+        f"Patient Name: {patient_name}\n"
+        
+        f"Patient: {patientId}\n"
+        f"Dr: {doctor_name}\n"
+        f"Need: {medicalItem}\n"
+        f"Within: {medicalTime}"
+    )
+
+    # 🔐 Force single SMS
+    sms_message = sms_message[:150]
+
+    # 📞 Send SMS
+    try:
+        twilio_client.messages.create(
+            body=sms_message,
+            from_=TWILIO_PHONE_NUMBER,
+            to=f"+91{guardian_number}"
+        )
+    except Exception as e:
+        print("SMS ERROR:", e)
+
+    return jsonify({"message": "Medical requirement sent"}), 201
+
+
+
+#--------------------Shift Ward---------------------
+@app.route("/api/patient/shift-ward", methods=["PUT"])
+def shift_ward():
+    data = request.json
+    mongo.db.patients.update_one(
+        {"patientId": data["patientId"]},
+        {"$set": {"wardNumber": data["newWard"]}}
+    )
+    return jsonify({"message": "Ward updated"}), 200
+
 
 
 
