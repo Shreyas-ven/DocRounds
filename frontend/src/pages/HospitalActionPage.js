@@ -58,17 +58,19 @@ function HospitalActionPage() {
           <div>
             <h4>License Image</h4>
             <img
-              src={`http://localhost:5000/uploads/${hospital.licenseImage}`}
-              alt="License"
+               src={hospital.licenseImage}
+               alt="License"
             />
+
           </div>
 
           <div>
             <h4>Hospital Image</h4>
             <img
-              src={`http://localhost:5000/uploads/${hospital.hospitalImage}`}
-              alt="Hospital"
+                src={hospital.hospitalImage}
+                alt="Hospital"
             />
+
           </div>
         </div>
 

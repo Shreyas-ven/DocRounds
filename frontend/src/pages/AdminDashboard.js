@@ -10,12 +10,22 @@ function AdminDashboard() {
   useEffect(() => {
     fetch("http://localhost:5000/api/admin/hospitals")
       .then(res => res.json())
-      .then(data => setHospitals(data))
+      .then(data => {
+      console.log("API DATA:", data);   // 👈 ADD THIS LINE
+      setHospitals(data);
+    })
+
       .catch(err => console.error(err));
   }, []);
 
-  const pending = hospitals.filter(h => h.status === "PENDING");
-  const approved = hospitals.filter(h => h.status === "APPROVED");
+  const pending = hospitals.filter(
+  h => h.status?.trim().toUpperCase() === "PENDING"
+  );
+
+  const approved = hospitals.filter(
+  h => h.status?.trim().toUpperCase() === "APPROVED"
+  );
+
 
   return (
   <div className="admin-dashboard">
@@ -30,7 +40,7 @@ function AdminDashboard() {
           <p className="empty-text">No pending hospitals</p>
         ) : (
           pending.map(h => (
-            <div className="hospital-card pending-card" key={h.hospital_id}>
+            <div className="hospital-card pending-card" key={`${h.hospital_id}-${h.status}`}>
               <h3>{h.hospitalName}</h3>
               <span className="status pending">PENDING</span>
 

@@ -6,6 +6,10 @@ from werkzeug.security import generate_password_hash
 from datetime import datetime, timezone
 from werkzeug.security import check_password_hash
 from bson import ObjectId
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 import os
 import random
@@ -13,10 +17,15 @@ import random
 PATIENT_UPLOAD = "patient_uploads"
 os.makedirs(PATIENT_UPLOAD, exist_ok=True)
 
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET")
+)
 
-TWILIO_ACCOUNT_SID = "ACcb4a2ed0a65a755180f89365e1488d15" 
-TWILIO_AUTH_TOKEN = "4a29e03e1e2143bbcf1c1d8c18ae1350"
-TWILIO_PHONE_NUMBER = "+19473334772"
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NUMBER = os.environ.get("TWILIO_PHONE_NUMBER")
 
 twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
@@ -42,7 +51,6 @@ def register_hospital():
         data = request.form
 
         hospital_id = generate_hospital_id()
-        hashed_password = generate_password_hash(data.get("password"))
 
         hospital = {
             "hospital_id": hospital_id,
@@ -53,7 +61,7 @@ def register_hospital():
             "generalWards": data.get("generalWards"),
             "medicalShop": data.get("medicalShop"),
             "ownerAadhar": data.get("ownerAadhar"),
-            "password": hashed_password,
+            "password": generate_password_hash(data.get("password")),
             "status": "PENDING",
             "verifiedByAdmin": False,
             "createdAt": datetime.now(timezone.utc)
@@ -63,14 +71,18 @@ def register_hospital():
         hospital_image = request.files.get("hospitalImage")
 
         if license_image:
-            license_path = os.path.join(UPLOAD_FOLDER, license_image.filename)
-            license_image.save(license_path)
-            hospital["licenseImage"] = license_image.filename
+            result = cloudinary.uploader.upload(
+                license_image,
+                folder="docrRounds/licenses"
+            )
+            hospital["licenseImage"] = result["secure_url"]
 
         if hospital_image:
-            hospital_path = os.path.join(UPLOAD_FOLDER, hospital_image.filename)
-            hospital_image.save(hospital_path)
-            hospital["hospitalImage"] = hospital_image.filename
+            result = cloudinary.uploader.upload(
+                hospital_image,
+                folder="docrRounds/hospitals"
+            )
+            hospital["hospitalImage"] = result["secure_url"]
 
         mongo.db.hospitalLogin.insert_one(hospital)
 
@@ -80,7 +92,7 @@ def register_hospital():
         }), 201
 
     except Exception as e:
-        print("ERROR:", e)
+        print("REGISTER ERROR:", e)
         return jsonify({"message": "Server error"}), 500
 
 
@@ -457,30 +469,27 @@ def admit_patient():
             "patientId": data.get("patientId"),
             "patientName": data.get("patientName"),
             "disease": data.get("disease"),
-            "branch": data.get("branch"),
             "doctorId": data.get("doctorId"),
             "guardianNumber": data.get("guardianNumber"),
             "wardNumber": data.get("wardNumber"),
-            "insuranceClaim": data.get("insuranceClaim"),
-            "totalFees": data.get("totalFees"),
-            "paidFees": data.get("paidFees"),
-            "balance": data.get("balance"),
             "createdAt": datetime.now(timezone.utc)
         }
 
-        # Handle patient image
         image = request.files.get("patientImage")
+
         if image:
-            image_path = os.path.join(PATIENT_UPLOAD, image.filename)
-            image.save(image_path)
-            patient["patientImage"] = image.filename
+            result = cloudinary.uploader.upload(
+                image,
+                folder="docrRounds/patients"
+            )
+            patient["patientImage"] = result["secure_url"]
 
         mongo.db.patients.insert_one(patient)
 
         return jsonify({"message": "Patient admitted successfully"}), 201
 
     except Exception as e:
-        print("ADMIT PATIENT ERROR:", e)
+        print("PATIENT ERROR:", e)
         return jsonify({"message": "Server error"}), 500
 
 @app.route("/api/patient/all", methods=["GET"])
