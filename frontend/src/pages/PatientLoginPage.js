@@ -8,6 +8,22 @@ function PatientLoginPage() {
   const [patientId, setPatientId] = useState("");
   const [accessCode, setAccessCode] = useState("");
 
+  // ✅ Toast state
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "" // success | error
+  });
+
+  // ✅ Toast helper
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "" });
+    }, 3000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,19 +41,26 @@ function PatientLoginPage() {
 
       const data = await res.json();
 
+      // ❌ Invalid credentials
       if (!res.ok) {
-        alert(data.message || "Login failed");
+        showToast(data.message || "Invalid Credentials", "error");
         return;
       }
 
-      // ✅ Save patient session (simple version)
+      // ✅ Save session
       localStorage.setItem("patient", JSON.stringify(data.patient));
 
-      // ✅ Go to dashboard
-      navigate("/patient-dashboard");
+      // ✅ Success message
+      showToast("Login Success", "success");
+
+      // ✅ Small delay for better UX
+      setTimeout(() => {
+        navigate("/patient-dashboard");
+      }, 800);
 
     } catch (err) {
-      alert("Server not reachable");
+      // ❌ Network / Server failure
+      showToast("Server error / Internet connection missing", "error");
     }
   };
 
@@ -69,6 +92,13 @@ function PatientLoginPage() {
       <button className="back-btn" onClick={() => navigate("/")}>
         ← Back to Home
       </button>
+
+      {/* ✅ Toast Notification */}
+      {toast.show && (
+        <div className={`toast ${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

@@ -477,7 +477,6 @@ def admit_patient():
             "totalFees": data.get("totalFees"),            
             "paidFees": data.get("paidFees"),             
             "balance": data.get("balance")              
-            
         }
 
         image = request.files.get("patientImage")
@@ -726,37 +725,26 @@ def shift_ward():
     return jsonify({"message": "Ward updated"}), 200
 
 
-@app.route("/api/patient/login", methods=["POST", "OPTIONS"])
+@app.route("/api/patient/login", methods=["POST"])
 def patient_login():
-
-    if request.method == "OPTIONS":
-        return jsonify({"status": "ok"}), 200
-
-    data = request.get_json(silent=True)
-
-    if not data:
-        return jsonify({"message": "Invalid JSON"}), 400
-
-    patientId = data.get("patientId")
-    doctorId = data.get("accessCode")
-
-    if not patientId or not doctorId:
-        return jsonify({"message": "Missing credentials"}), 400
+    data = request.get_json()
 
     patient = mongo.db.patients.find_one({
-        "patientId": patientId,
-        "doctorId": doctorId
+        "patientId": data.get("patientId"),
+        "doctorId": data.get("accessCode")
     })
 
     if not patient:
-        return jsonify({"message": "Invalid Patient ID or Access Code"}), 401
+        return jsonify({"message": "Invalid credentials"}), 401
 
-    # ✅ Convert ObjectId → string
     patient["_id"] = str(patient["_id"])
+
+    if patient.get("createdAt"):
+        patient["createdAt"] = patient["createdAt"].isoformat()
 
     return jsonify({
         "message": "Login successful",
-        "patient": patient   # ✅ Return FULL document
+        "patient": patient
     }), 200
 
 
