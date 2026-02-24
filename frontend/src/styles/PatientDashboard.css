@@ -1,0 +1,66 @@
+.patient-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  font-family: Arial, sans-serif;
+}
+
+.patient-dashboard h2 {
+  color: white;
+  margin-bottom: 25px;
+}
+
+.patient-card {
+  width: 420px;
+  background: white;
+  border-radius: 14px;
+  padding: 25px 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.row span {
+  color: #555;
+}
+
+.row b {
+  color: #222;
+}
+
+.balance b {
+  color: #d32f2f;
+}
+
+hr {
+  margin: 18px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+.created {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #777;
+  text-align: right;
+}
+
+.not-logged {
+  text-align: center;
+  margin-top: 100px;
+  color: #444;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

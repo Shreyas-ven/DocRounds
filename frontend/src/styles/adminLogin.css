@@ -34,3 +34,40 @@
 .admin-login-form button:hover {
   background-color: #1a5dcc;
 }
+
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 14px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s ease;
+  z-index: 9999;
+  color: white;
+}
+
+/* 🟡 Success */
+.toast.success {
+  background-color: #facc15;
+  color: black;
+}
+
+/* 🔴 Error */
+.toast.error {
+  background-color: #ef4444;
+  color: white;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

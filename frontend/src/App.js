@@ -19,6 +19,7 @@ import PatientManagement from "./pages/PatientManagement";
 import BloodRequirementManagement from "./pages/BloodRequirementManagement";
 import BloodBankDashboard from "./pages/BloodBankDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import PatientDashboard from "./pages/PatientDashboard";
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
         <Route path="/blood-bank-dashboard" element={<BloodBankDashboard />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermsPage />} />
-
+        <Route path="/patient-dashboard" element={<PatientDashboard />} />
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/admin/hospital/:hospitalId"element={<HospitalActionPage />} />

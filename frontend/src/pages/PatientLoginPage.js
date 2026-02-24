@@ -4,12 +4,41 @@ import "../styles/Login.css";
 
 function PatientLoginPage() {
   const navigate = useNavigate();
+
   const [patientId, setPatientId] = useState("");
   const [accessCode, setAccessCode] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Patient login submitted (API will be added later)");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/patient/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          patientId,
+          accessCode
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      // ✅ Save patient session (simple version)
+      localStorage.setItem("patient", JSON.stringify(data.patient));
+
+      // ✅ Go to dashboard
+      navigate("/patient-dashboard");
+
+    } catch (err) {
+      alert("Server not reachable");
+    }
   };
 
   return (
@@ -28,7 +57,7 @@ function PatientLoginPage() {
 
         <input
           type="password"
-          placeholder="Access Code"
+          placeholder="Access Code (Doctor ID)"
           value={accessCode}
           onChange={(e) => setAccessCode(e.target.value)}
           required

@@ -9,11 +9,25 @@ function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: ""   // "success" or "error"
+  });
+
+  const showToast = (message, type) => {
+    setToast({ show: true, message, type });
+
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "" });
+    }, 2000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please enter email and password");
+      showToast("Please enter email and password", "error");
       return;
     }
 
@@ -31,19 +45,21 @@ function AdminLoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.message || "⚠️ Invalid credentials");
       }
 
       // ✅ Save login flag
       localStorage.setItem("adminLoggedIn", "true");
 
-      alert("Admin login successful");
+      // ✅ Success Toast
+      showToast("Login Successful ", "success");
 
-      // ✅ REDIRECT TO ADMIN DASHBOARD
-      navigate("/admin-dashboard", { replace: true });
+      setTimeout(() => {
+        navigate("/admin-dashboard");
+      }, 2000);
 
     } catch (error) {
-      alert(error.message);
+      showToast(error.message, "error");
     } finally {
       setLoading(false);
     }
@@ -75,6 +91,16 @@ function AdminLoginPage() {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+
+      {/* 🔔 Toast */}
+      {toast.show && (
+  <div className={`toast ${toast.type}`}>
+    {toast.type === "success" && "✅ "}
+    {toast.type === "error" && "❌ "}
+    {toast.type === "warning" && "⚠️ "}
+    {toast.message}
+  </div>
+)}
     </div>
   );
 }

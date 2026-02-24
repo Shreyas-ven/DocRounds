@@ -472,7 +472,12 @@ def admit_patient():
             "doctorId": data.get("doctorId"),
             "guardianNumber": data.get("guardianNumber"),
             "wardNumber": data.get("wardNumber"),
-            "createdAt": datetime.now(timezone.utc)
+            "createdAt": datetime.now(timezone.utc),
+            "insuranceClaim": data.get("insuranceClaim"),  
+            "totalFees": data.get("totalFees"),            
+            "paidFees": data.get("paidFees"),             
+            "balance": data.get("balance")              
+            
         }
 
         image = request.files.get("patientImage")
@@ -623,12 +628,12 @@ def round_report():
     DocRounds – Patient Update
 
     ID: {patientId}
-    Patient Name: {patient.get('patientName')}
-    Doctor: Dr. {doctor.get('name')}
+    Patient Name: {patient.get('patientName')} 
     Round Time: {reportTime}
     Feedback: {reportText}
 
     Thank you.
+    By - Dr. {doctor.get('name')}
     """
 
     # 📤 Send SMS via Twilio
@@ -674,10 +679,8 @@ def medical_requirement():
         "patientId": patientId,
         "patientName": patient_name,
         "guardianNumber": guardian_number,
-
         "doctorId": doctorId,
         "doctorName": doctor_name,
-
         "item": medicalItem,
         "within": medicalTime,
         "status": "PENDING",
@@ -690,8 +693,6 @@ def medical_requirement():
     sms_message = (
         f"DocRounds Alert - Medical Requirement \n"
         f"Patient Name: {patient_name}\n"
-        
-        f"Patient: {patientId}\n"
         f"Dr: {doctor_name}\n"
         f"Need: {medicalItem}\n"
         f"Within: {medicalTime}"
@@ -725,6 +726,38 @@ def shift_ward():
     return jsonify({"message": "Ward updated"}), 200
 
 
+@app.route("/api/patient/login", methods=["POST", "OPTIONS"])
+def patient_login():
+
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+
+    data = request.get_json(silent=True)
+
+    if not data:
+        return jsonify({"message": "Invalid JSON"}), 400
+
+    patientId = data.get("patientId")
+    doctorId = data.get("accessCode")
+
+    if not patientId or not doctorId:
+        return jsonify({"message": "Missing credentials"}), 400
+
+    patient = mongo.db.patients.find_one({
+        "patientId": patientId,
+        "doctorId": doctorId
+    })
+
+    if not patient:
+        return jsonify({"message": "Invalid Patient ID or Access Code"}), 401
+
+    # ✅ Convert ObjectId → string
+    patient["_id"] = str(patient["_id"])
+
+    return jsonify({
+        "message": "Login successful",
+        "patient": patient   # ✅ Return FULL document
+    }), 200
 
 
 if __name__ == "__main__":
