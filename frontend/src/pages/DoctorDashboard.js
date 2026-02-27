@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/DoctorDashboard.css";
+import Swal from "sweetalert2";
+import animBg from "../assets/anim-bg.webp";
 
 function DoctorDashboard() {
   const navigate = useNavigate();
@@ -23,7 +25,19 @@ function DoctorDashboard() {
 
   const [newWard, setNewWard] = useState("");
 
-
+  const Toast = Swal.mixin({
+  toast: true,
+  position: "bottom-end",
+  showConfirmButton: false,
+  timer: 2500,
+  timerProgressBar: true,
+  background: "#111827",
+  color: "#fff",
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 
 
 
@@ -58,7 +72,10 @@ const saveRoundReport = (patientId) => {
       reportTime
     })
   }).then(() => {
-    alert("Round report sent");
+    Toast.fire({
+    icon: "success",
+    title: `Round report sent for ${patientId}`
+    });
     setShowReport(null);
     setReportText("");
   });
@@ -76,7 +93,10 @@ const sendMedicalReq = (patientId) => {
       medicalTime
     })
   }).then(() => {
-    alert("Medical requirement sent");
+    Toast.fire({
+    icon: "success",
+    title: `Medical requirement sent for ${patientId}`
+    });
     setShowMedical(null);
     setMedicalItem("");
   });
@@ -92,15 +112,14 @@ const shiftWard = (patientId) => {
       newWard
     })
   }).then(() => {
-    alert("Ward updated");
+    Toast.fire({
+    icon: "success",
+    title: `Ward updated for ${patientId}`
+    } );
     setShowWardShift(null);
     setNewWard("");
   });
 };
-
-
-
-
 
 
 
@@ -110,7 +129,17 @@ const shiftWard = (patientId) => {
   };
 
   return (
-    <div className="doctor-dashboard">
+    <div
+  className="doctor-dashboard"
+  style={{
+    background: `linear-gradient(rgba(15,23,42,0.75),
+                 rgba(15,23,42,0.85)),
+                 url(${animBg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundAttachment: "fixed"
+  }}
+>
       {/* Header */}
       <header className="dashboard-header">
         <h2>Doctor Dashboard</h2>

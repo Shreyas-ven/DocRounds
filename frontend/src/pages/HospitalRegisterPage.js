@@ -13,6 +13,7 @@ function HospitalRegisterPage() {
   const [showToast, setShowToast] = useState(false);
   const [hospitalId, setHospitalId] = useState("");
   const [timer, setTimer] = useState(12);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     hospitalName: "",
@@ -66,6 +67,7 @@ function HospitalRegisterPage() {
       return;
     }
 
+    setLoading(true);
     try {
       const formDataToSend = new FormData();
 
@@ -98,8 +100,12 @@ function HospitalRegisterPage() {
     } catch (error) {
       console.error(error);
       alert("Registration failed. Please check server.");
-    }
+    } finally {
+    setLoading(false); // ✅ STOP LOADER
+  }
   };
+
+  
 
   /* =========================
      UI
@@ -213,7 +219,7 @@ function HospitalRegisterPage() {
       {/* SUCCESS TOAST */}
       {showToast && (
         <div className="success-toast">
-          <h4>✅ Registration Successful</h4>
+          <h4>Registration Successful</h4>
 
           <p>
             Your hospital is successfully registered !!
@@ -228,6 +234,14 @@ function HospitalRegisterPage() {
           <div className="toast-timer">
             Redirecting in {timer}s...
           </div>
+        </div>
+      )}
+
+      {/* ================= LOADER ================= */}
+      {loading && (
+        <div className="loader-overlay">
+         <div className="modern-loader"></div>
+        <p>Registering Hospital...</p>
         </div>
       )}
 

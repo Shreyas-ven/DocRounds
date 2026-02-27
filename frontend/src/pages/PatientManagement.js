@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import "../styles/PatientManagement.css";
+import Swal from "sweetalert2";
+
+/* ✅ background image */
+import patBg from "../assets/pat-man-bg.webp";
 
 function PatientManagement() {
 
@@ -20,6 +24,20 @@ function PatientManagement() {
     balance: "",
     patientImage: null
   });
+
+  const Toast = Swal.mixin({
+  toast: true,
+  position: "bottom-end",   // ✅ bottom right
+  showConfirmButton: false,
+  timer: 2500,
+  timerProgressBar: true,
+  background: "#111827",
+  color: "#fff",
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 
   const [dischargeId, setDischargeId] = useState("");
 
@@ -54,7 +72,10 @@ function PatientManagement() {
       body: formData
     });
 
-    alert("Patient admitted successfully ✅");
+    Toast.fire({
+      icon: "success",
+      title: `Patient ${patient.patientId} admitted successfully`
+      });
 
     setPatient({
       patientId: generatePatientId(),
@@ -79,108 +100,161 @@ function PatientManagement() {
       { method: "DELETE" }
     );
 
-    alert("Patient discharged successfully 🏥");
+    Toast.fire({
+      icon: "success",
+     title: `Patient ${dischargeId} discharged successfully`
+   });
     setDischargeId("");
   };
 
   return (
-    <div className="patient-container">
+    <div
+      className="patient-page"
+      style={{
+        background: `linear-gradient(rgba(15,23,42,0.8),
+                     rgba(15,23,42,0.85)),
+                     url(${patBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed"
+      }}
+    >
+      <h1 className="page-title">Patient Management</h1>
 
-      <h1>Patient Management</h1>
+      {/* ✅ LEFT RIGHT LAYOUT */}
+      <div className="patient-grid">
 
-      {/* ================= ADMIT PATIENT ================= */}
-      <div className="patient-card">
-        <h2>Admit Patient</h2>
+        <div className="patient-card glass">
+  <h2>Admit Patient</h2>
 
-        <p><b>Patient ID:</b> {patient.patientId}</p>
+  <p><b>Patient ID:</b> {patient.patientId}</p>
 
-        <input
-          name="patientName"
-          placeholder="Patient Name"
-          value={patient.patientName}
-          onChange={handleChange}
-        />
+  {/* Patient Name */}
+  <div className="form-group">
+    <label>Patient Name</label>
+    <input
+      name="patientName"
+      value={patient.patientName}
+      onChange={handleChange}
+    />
+  </div>
 
-        <input
-          name="disease"
-          placeholder="Disease Name"
-          value={patient.disease}
-          onChange={handleChange}
-        />
+  {/* Disease */}
+  <div className="form-group">
+    <label>Disease Name</label>
+    <input
+      name="disease"
+      value={patient.disease}
+      onChange={handleChange}
+    />
+  </div>
 
-        <select name="branch" value={patient.branch} onChange={handleChange}>
-          <option value="">Select Branch</option>
-          <option>Neurology</option>
-          <option>Cardiology</option>
-          <option>Orthopedics</option>
-          <option>Oncology</option>
-          <option>Pediatrics</option>
-        </select>
+  {/* Branch */}
+  <div className="form-group">
+    <label>Select Branch</label>
+    <select
+      name="branch"
+      value={patient.branch}
+      onChange={handleChange}
+    >
+      <option value="">Select Branch</option>
+      <option>Neurology</option>
+      <option>Cardiology</option>
+      <option>Orthopedics</option>
+      <option>Oncology</option>
+      <option>Pediatrics</option>
+    </select>
+  </div>
 
-        <input
-          name="doctorId"
-          placeholder="Doctor ID (DOCT-123456) - DOCTOR INCHARGE"
-          value={patient.doctorId}
-          onChange={handleChange}
-        />
+  {/* Doctor ID */}
+  <div className="form-group">
+    <label>Doctor ID (DOCT-123456)</label>
+    <input
+      name="doctorId"
+      value={patient.doctorId}
+      onChange={handleChange}
+    />
+  </div>
 
-        <input
-          name="guardianNumber"
-          placeholder="Parent / Guardian Contact"
-          value={patient.guardianNumber}
-          onChange={handleChange}
-        />
+  {/* Guardian */}
+  <div className="form-group">
+    <label>Guardian Contact</label>
+    <input
+      name="guardianNumber"
+      value={patient.guardianNumber}
+      onChange={handleChange}
+    />
+  </div>
 
-        <input
-          name="wardNumber"
-          placeholder="Ward / ICU / Room Number"
-          value={patient.wardNumber}
-          onChange={handleChange}
-        />
+  {/* Ward */}
+  <div className="form-group">
+    <label>Ward / ICU / Room</label>
+    <input
+      name="wardNumber"
+      value={patient.wardNumber}
+      onChange={handleChange}
+    />
+  </div>
 
-        <input
-          name="insuranceClaim"
-          placeholder="Insurance Amount Received"
-          value={patient.insuranceClaim}
-          onChange={handleChange}
-        />
+  {/* Insurance */}
+  <div className="form-group">
+    <label>Insurance Amount</label>
+    <input
+      name="insuranceClaim"
+      value={patient.insuranceClaim}
+      onChange={handleChange}
+    />
+  </div>
 
-        <input
-          name="totalFees"
-          placeholder="Total Fees"
-          value={patient.totalFees}
-          onChange={handleChange}
-        />
+  {/* Fees */}
+  <div className="form-group">
+    <label>Total Fees</label>
+    <input
+      name="totalFees"
+      value={patient.totalFees}
+      onChange={handleChange}
+    />
+  </div>
 
-        <input
-          name="paidFees"
-          placeholder="Paid Amount"
-          value={patient.paidFees}
-          onChange={handleChange}
-        />
+  <div className="form-group">
+    <label>Paid Amount</label>
+    <input
+      name="paidFees"
+      value={patient.paidFees}
+      onChange={handleChange}
+    />
+  </div>
 
-        <p><b>Balance to be Paid:</b> ₹{patient.balance}</p>
+  <p className="balance">
+    Balance: ₹{patient.balance}
+  </p>
 
-        <input type="file" onChange={handleImage} />
+  <div className="form-group">
+    <label>Patient Image</label>
+    <input type="file" onChange={handleImage} />
+  </div>
 
-        <button onClick={admitPatient}>Admit Patient</button>
+  <button className="primary-btn" onClick={admitPatient}>
+    Admit Patient
+  </button>
+</div>
+
+        {/* ================= DISCHARGE ================= */}
+        <div className="patient-card glass danger">
+          <h2>Discharge Patient</h2>
+
+          <input
+            placeholder="Enter Patient ID (PAT-123456)"
+            value={dischargeId}
+            onChange={e => setDischargeId(e.target.value)}
+          />
+
+          <button className="danger-btn" onClick={dischargePatient}>
+            Discharge Patient
+          </button>
+        </div>
+
       </div>
-
-      {/* ================= DISCHARGE PATIENT ================= */}
-      <div className="patient-card danger">
-        <h2>Discharge Patient</h2>
-
-        <input
-          placeholder="Enter Patient ID (PAT-123456)"
-          value={dischargeId}
-          onChange={e => setDischargeId(e.target.value)}
-        />
-
-        <button className="danger-btn" onClick={dischargePatient}>
-          Discharge Patient
-        </button>
-      </div>
-
     </div>
   );
 }

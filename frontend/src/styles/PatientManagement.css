@@ -1,66 +1,172 @@
-.patient-container {
-  max-width: 500px;
-  margin: auto;
-  padding: 30px;
+/* ================= PAGE ================= */
+.patient-page {
+  min-height: 100vh;
+  padding: 40px 30px;
+  font-family: "Segoe UI", sans-serif;
 }
 
-.patient-container h1 {
+/* ================= TITLE ================= */
+.page-title {
   text-align: center;
   color: #ffffff;
-  margin-bottom: 30px;
+  font-size: 38px;
+  margin-bottom: 35px;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
+/* ================= GRID (LEFT RIGHT) ================= */
+.patient-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;          /* ✅ reduced gap */
+  flex-wrap: wrap;
+}
+
+/* ================= GLASS CARD ================= */
 .patient-card {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-  margin-bottom: 30px;
+  width: 420px;
+  padding: 25px;
+  border-radius: 14px;
+
+  /* Glass UI */
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+
+  transition: all 0.3s ease;
 }
 
+/* Hover Interaction */
+.patient-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+}
+
+/* ================= TEXT VISIBILITY FIX ================= */
 .patient-card h2 {
-  color: #c0392b;
+  color: #000000;
   margin-bottom: 15px;
-}
-
-.patient-card input,
-.patient-card select {
-  width: 95%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 22px;
 }
 
 .patient-card p {
-  margin: 6px 0;
+  color: #000000;     /* ✅ visible text */
   font-size: 14px;
+  margin-bottom: 8px;
 }
 
-.patient-card button {
-  background: #e74c3c;
-  color: white;
+.patient-card b {
+  color: #000000;
+}
+
+/* ================= INPUTS ================= */
+.patient-card input,
+.patient-card select {
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 12px;
+
+  border-radius: 8px;
+  border: 1px solid rgba(24, 23, 23, 0.35);
+
+  background: rgba(255,255,255,0.15);
+  color: #787474;
+  font-size: 14px;
+
+  outline: none;
+  transition: 0.25s;
+}
+
+/* placeholder visible */
+.patient-card input::placeholder {
+  color: rgba(120, 112, 112, 0.75);
+}
+
+/* focus effect */
+.patient-card input:focus,
+.patient-card select:focus {
+  border-color: #38bdf8;
+  background: rgba(255,255,255,0.22);
+}
+
+/* dropdown text fix */
+.patient-card select option {
+  color: #000;
+}
+
+/* ================= BALANCE ================= */
+.balance {
+  font-weight: bold;
+  color: #22c55e;
+  margin-bottom: 10px;
+}
+
+/* ================= BUTTONS ================= */
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
   border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
+
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
+
+  transition: 0.3s;
 }
 
-.patient-card button:hover {
-  background: #c0392b;
+.primary-btn:hover {
+  transform: scale(1.03);
 }
 
-/* Danger Section */
+/* ================= DISCHARGE ================= */
 .patient-card.danger {
-  border: 2px solid #e74c3c;
+  border: 1px solid rgba(239,68,68,0.5);
 }
 
 .danger-btn {
-  background: #555;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+
+  background: linear-gradient(135deg,#ef4444,#b91c1c);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .danger-btn:hover {
-  background: #333;
+  transform: scale(1.03);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .patient-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;   /* smaller gap mobile */
+  }
+}
+
+/* ================= FORM LABELS ================= */
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3c3939;
+  letter-spacing: 0.4px;
 }
