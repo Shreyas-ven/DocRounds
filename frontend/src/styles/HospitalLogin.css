@@ -1,0 +1,53 @@
+.hospital-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Header */
+.main-header {
+  text-align: center;
+  padding: 18px;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  background: rgba(0, 120, 140, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+/* Glass Card */
+.login-box {
+  width: 360px;
+  margin: auto;
+  padding: 30px;
+
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(16px);
+
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+}
+
+/* Hospital Theme Button */
+.login-box button[type="submit"] {
+  background: linear-gradient(135deg,#0ea5a4,#22c55e);
+  color: white;
+}
+
+/* Register button */
+.register-btn {
+  margin-top: 10px;
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+/* Footer */
+.main-footer {
+  text-align: center;
+  padding: 15px;
+  color: white;
+  background: rgba(0,0,0,0.25);
+}

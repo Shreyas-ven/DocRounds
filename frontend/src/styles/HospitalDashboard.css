@@ -1,216 +1,222 @@
-/* Container & font */
+/* ================= MAIN CONTAINER ================= */
 .dashboard-container {
-  padding: 30px;
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(to right, #a4bec0, #00ffcc);
+  padding: 40px;
   min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: white;
 }
 
-/* Header */
+/* ================= HEADER ================= */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  padding: 22px 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+}
+
+.dashboard-header h1 {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+/* ================= SECTION ================= */
+.section {
+  margin-top: 35px;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 18px;
 }
 
-.dashboard-header h1 {
-  font-size: 38px;
+.section-title {
+  font-size: 26px;
+  font-weight: 600;
 }
 
-/* Small button */
-.small-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-  background: #4f46e5;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+/* ================= GLASS CARD ================= */
+.dashboard-card,
+.card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.15);
 
-.small-btn:hover {
-  background: #3730a3;
-  transform: scale(1.05);
-}
-
-/* Dashboard card */
-.dashboard-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 24px;
+  border-radius: 16px;
   margin-bottom: 30px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  animation: zoomIn 0.6s ease;
+
+  box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+  transition: all 0.35s ease;
 }
 
+.dashboard-card:hover,
+.card:hover {
+  transform: translateY(-6px);
+}
+
+/* ================= FORM SPACING ================= */
 .dashboard-card label {
   display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
   font-weight: 500;
-  margin-top: 12px;
 }
 
 .dashboard-card input {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-  transition: all 0.3s ease;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 10px;
+
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.dashboard-card input::placeholder {
+  color: rgba(255,255,255,0.7);
 }
 
 .dashboard-card input:focus {
   outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.6);
 }
 
-/* Update button */
-.update-btn {
-  margin-top: 20px;
-  padding: 15px;
-  width: 50%;
-  background: #4f46e5;
-  color: white;
-  border-radius: 10px;
+/* ================= BUTTON BASE ================= */
+.small-btn,
+.update-btn,
+.blood_bank-btn,
+.danger-btn {
   border: none;
   cursor: pointer;
-  font-size: 15px;
-  margin-right: 5px;
+  border-radius: 10px;
+  color: white;
   transition: all 0.3s ease;
 }
 
-.update-btn:hover {
-  transform: scale(1.03);
-  background: #3730a3;
+/* ADD SPACING BETWEEN BUTTONS */
+button {
+  margin-top: 10px;
 }
 
-/* Card grid for doctors */
+/* Primary */
+.small-btn {
+  padding: 9px 16px;
+  background: linear-gradient(135deg,#6366f1,#4f46e5);
+}
+
+.small-btn:hover {
+  transform: scale(1.07);
+}
+
+/* Update */
+.update-btn {
+  padding: 14px;
+  width: 50%;
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+}
+
+.update-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Blood */
+.blood_bank-btn {
+  padding: 14px;
+  width: 50%;
+  background: linear-gradient(135deg,#ef4444,#b91c1c);
+}
+
+.blood_bank-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Danger */
+.danger-btn {
+  padding: 9px 14px;
+  background: linear-gradient(135deg,#ef4444,#991b1b);
+}
+
+.danger-btn:hover {
+  transform: scale(1.07);
+}
+
+/* ================= DOCTOR GRID ================= */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 38px;
+  grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+  gap: 30px;
 }
 
+/* CARD CONTENT ALIGNMENT */
 .card {
-  background: #fff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  animation: zoomIn 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .card h3 {
-  margin-bottom: 5px;
+  font-size: 20px;
+  margin-bottom: 6px;
 }
 
 .card p {
-  font-size: 14px;
-  margin: 3px 0;
+  margin: 2px 0;
 }
 
-/* Empty text */
-.empty-text {
-  font-size: 14px;
-  color: #6b7280;
+/* BUTTON GROUP INSIDE CARD */
+.card-buttons {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Animations */
-@keyframes zoomIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+/* ================= SCROLL TEXT ================= */
+.scrolling-text-container {
+  overflow: hidden;
+  background: rgba(255,0,0,0.85);
+  border-radius: 14px;
+  margin-bottom: 25px;
+  padding: 8px 0;
 }
 
+.scrolling-text {
+  white-space: nowrap;
+  font-weight: 600;
+  animation: scroll-left 35s linear infinite;
+}
+
+@keyframes scroll-left {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+
+/* ================= SUCCESS ================= */
+.success-msg {
+  background: rgba(34,197,94,0.25);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* ================= LOADING ================= */
 .loading {
-  font-size: 18px;
   text-align: center;
-  padding: 100px 0;
+  font-size: 20px;
+  padding-top: 120px;
   animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-  0% { opacity: 0.4; }
+  0%,100% { opacity: .4; }
   50% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-
-.success-msg {
-  color: #1e7f34;
-  background: #e6f7ec;
-  padding: 10px 14px;
-  border-radius: 6px;
-  margin-bottom: 15px;
-}
-
-
-.scrolling-text-container {
-  width: 100%;
-  overflow: hidden;
-  background: #ff0000;        /* keeps it clean on white theme */
-  margin: 1px 0 10px;
-  border-radius: 15px;
-}
-
-.scrolling-text {
-  display: inline-block;
-  white-space: nowrap;
-  color: #ffffff;           /* strong red */
-  font-weight: bold;
-  font-size: 16px;
-  animation: scroll-left 35s linear infinite;
-}
-
-/* Animation */
-@keyframes scroll-left {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-button.danger-btn {
-  background-color: #dc2626 !important;
-  color: #ffffff !important;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  margin-top: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button.danger-btn:hover {
-  background-color: #b91c1c !important;
-  transform: scale(1.05);
-}
-
-.blood_bank-btn {
-  margin-top: 20px;
-  padding: 15px;
-  width: 50%;
-  background: #ff0000;
-  color: white;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  margin-right: 5px;
-  transition: all 0.3s ease;
-}
-
-.blood_bank-btn:hover {
-  transform: scale(1.03);
-  background: #d8082b;
 }

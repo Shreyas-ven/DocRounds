@@ -1,73 +1,142 @@
-.admin-login-container {
-  max-width: 400px;
-  margin: 80px auto;
-  padding: 30px;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+.admin-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Header */
+.main-header {
   text-align: center;
+  padding: 18px;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
 }
 
-.admin-login-container h2 {
-  color: #2c3e50;
+/* Center container */
+.admin-login-container {
+  text-align: center;
+  color: white;
 }
 
+/* Glass card */
+.admin-login-form {
+  width: 360px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(18px);
+
+  box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+}
+
+/* Inputs */
 .admin-login-form input {
   width: 100%;
   padding: 12px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
 }
 
+/* Admin button (dark theme) */
 .admin-login-form button {
   width: 100%;
   padding: 12px;
-  margin-top: 15px;
-  background-color: #2c7be5;
-  color: white;
+  border-radius: 30px;
   border: none;
-  border-radius: 6px;
+
+  background: linear-gradient(135deg,#7c3aed,#2563eb);
+  color: white;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.admin-login-form button:hover {
-  background-color: #1a5dcc;
+/* Footer */
+.main-footer {
+  text-align: center;
+  padding: 15px;
+  color: white;
+  background: rgba(0,0,0,0.25);
 }
 
-
+/* Toast */
 .toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 14px 22px;
+  margin-top: 20px;
+  padding: 12px;
   border-radius: 8px;
-  font-weight: 600;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  animation: slideUp 0.3s ease;
+}
+
+.toast.success { background: #16a34a; }
+.toast.error { background: #dc2626; }
+.toast.warning { background: #f59e0b; }
+
+/* ================= TOAST ================= */
+
+.toast-container {
+  position: fixed;
+  top: 25px;
+  right: -400px;
+  min-width: 280px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  transition: all 0.5s ease;
   z-index: 9999;
-  color: white;
+  overflow: hidden;
 }
 
-/* 🟡 Success */
-.toast.success {
-  background-color: #facc15;
-  color: black;
+/* Slide Animation */
+.toast-container.show {
+  right: 25px;
 }
 
-/* 🔴 Error */
-.toast.error {
-  background-color: #ef4444;
-  color: white;
+/* Types */
+.toast-container.success {
+  background: rgba(16,185,129,0.9);
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(15px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.toast-container.error {
+  background: rgba(239,68,68,0.9);
+}
+
+.toast-container.warning {
+  background: rgba(245,158,11,0.9);
+}
+
+.toast-icon {
+  font-size: 18px;
+}
+
+.toast-message {
+  flex: 1;
+}
+
+/* Progress bar animation */
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: white;
+  width: 100%;
+  animation: toastTimer 2.5s linear forwards;
+}
+
+@keyframes toastTimer {
+  from { width: 100%; }
+  to { width: 0%; }
 }

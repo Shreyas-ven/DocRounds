@@ -1,29 +1,65 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
+import { v4 as uuidv4 } from "uuid";
+import QRCode from "qrcode";
 import "../styles/PatientDashboard.css";
 
 function PatientDashboard() {
   const [patient, setPatient] = useState(null);
+  const [report, setReport] = useState(null);
+  const [loadingReport, setLoadingReport] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem("patient");
+
     if (stored) {
-      setPatient(JSON.parse(stored));
+      const parsedPatient = JSON.parse(stored);
+      setPatient(parsedPatient);
+
+      fetchReport(parsedPatient.patientId);
+    } else {
+      setLoadingReport(false);
     }
   }, []);
+
+  const fetchReport = async (patientId) => {
+    try {
+      // ✅ CHANGE URL to your backend
+      const res = await fetch(`http://localhost:5000/api/reports/${patientId}`);
+      const data = await res.json();
+
+      if (res.ok && data) {
+        setReport(data);
+      }
+    } catch (err) {
+      console.error("Report fetch failed:", err);
+    } finally {
+      setLoadingReport(false);
+    }
+  };
 
   if (!patient) {
     return <h2 className="not-logged">Not Logged In</h2>;
   }
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
     const doc = new jsPDF();
+
+    const reportId = uuidv4(); // Unique identity
+    const generatedAt = new Date().toLocaleString();
+
+    const verifyURL = `https://yourdomain.com/verify/${reportId}`;
+
+    const qrImage = await QRCode.toDataURL(verifyURL);
 
     doc.setFontSize(18);
     doc.text("Patient Report", 14, 20);
 
-    doc.setFontSize(12);
-    let y = 35;
+    doc.setFontSize(11);
+    doc.text(`Report ID: ${reportId}`, 14, 30);
+    doc.text(`Generated On: ${generatedAt}`, 14, 36);
+
+    let y = 50;
 
     const line = (label, value) => {
       doc.text(`${label}: ${value || "-"}`, 14, y);
@@ -34,30 +70,29 @@ function PatientDashboard() {
     line("Name", patient.patientName);
     line("Disease", patient.disease);
     line("Doctor ID", patient.doctorId);
-    line("Guardian Number", patient.guardianNumber);
     line("Ward Number", patient.wardNumber);
-    line("Insurance Claim", patient.insuranceClaim);
 
-    y += 5;
-    line("Total Fees", `₹ ${patient.totalFees}`);
-    line("Paid Fees", `₹ ${patient.paidFees}`);
-    line("Balance", `₹ ${patient.balance}`);
+    y += 10;
 
-    y += 5;
-    line(
-      "Admitted On",
-      patient.createdAt
-        ? new Date(patient.createdAt).toLocaleString()
-        : "N/A"
-    );
+    doc.text(`Total Fees: ₹ ${patient.totalFees}`, 14, y);
+    y += 8;
+    doc.text(`Paid Fees: ₹ ${patient.paidFees}`, 14, y);
+    y += 8;
+    doc.text(`Balance: ₹ ${patient.balance}`, 14, y);
 
-    doc.save(`${patient.patientId}_Patient_Report.pdf`);
+    doc.addImage(qrImage, "PNG", 140, 20, 50, 50);
+
+    doc.setFontSize(9);
+    doc.text("Scan QR to verify document authenticity", 140, 75);
+
+    doc.save(`${patient.patientId}_Report.pdf`);
   };
 
   return (
     <div className="patient-dashboard">
       <h2>Patient Dashboard</h2>
 
+      {/* ✅ PATIENT CARD */}
       <div className="patient-card">
         {patient.patientImage && (
           <img
@@ -73,7 +108,6 @@ function PatientDashboard() {
         <div className="row"><span>Doctor ID</span><b>{patient.doctorId}</b></div>
         <div className="row"><span>Guardian Number</span><b>{patient.guardianNumber}</b></div>
         <div className="row"><span>Ward Number</span><b>{patient.wardNumber}</b></div>
-        <div className="row"><span>Insurance Claim</span><b>{patient.insuranceClaim}</b></div>
 
         <hr />
 
@@ -86,7 +120,26 @@ function PatientDashboard() {
         </div>
       </div>
 
-      {/* ✅ BUTTON BELOW CARD */}
+      {/* ✅ REPORT SECTION */}
+      {loadingReport ? (
+        <div className="report-loading">Loading report...</div>
+      ) : report ? (
+        <div className="report-card">
+          <h3>Patient Report</h3>
+
+          <div className="row"><span>Doctor</span><b>{report.doctorName}</b></div>
+          <div className="row"><span>Remarks</span><b>{report.report}</b></div>
+          <div className="row"><span>Time</span><b>{report.time}</b></div>
+          <div className="row">
+            <span>Created</span>
+            <b>{new Date(report.createdAt).toLocaleString()}</b>
+          </div>
+        </div>
+      ) : (
+        <div className="no-report">No report available</div>
+      )}
+
+      {/* ✅ PDF BUTTON */}
       <button className="pdf-btn" onClick={downloadPDF}>
         ⬇ Download PDF
       </button>

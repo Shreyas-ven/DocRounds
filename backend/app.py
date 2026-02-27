@@ -747,6 +747,27 @@ def patient_login():
         "patient": patient
     }), 200
 
+# -------------------- GET REPORT BY PATIENT ID --------------------
+@app.route("/api/reports/<patient_id>", methods=["GET"])
+def get_report_by_patient(patient_id):
+    try:
+        report = mongo.db.round_reports.find_one(
+            {"patientId": patient_id},
+            {"_id": 0}  # hide Mongo ID
+        )
+
+        if not report:
+            return jsonify(None), 404
+
+        # Convert datetime → string (VERY IMPORTANT)
+        if report.get("createdAt"):
+            report["createdAt"] = report["createdAt"].isoformat()
+
+        return jsonify(report), 200
+
+    except Exception as e:
+        print("GET REPORT ERROR:", e)
+        return jsonify(None), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

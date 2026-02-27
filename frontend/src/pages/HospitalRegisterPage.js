@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import "../styles/hospitalRegister.css";
+import hospitalBg from "../assets/hospital-bg.webp";
 
 function HospitalRegisterPage() {
   const navigate = useNavigate();
 
   const [licenseFile, setLicenseFile] = useState(null);
   const [hospitalFile, setHospitalFile] = useState(null);
+
+  const [showToast, setShowToast] = useState(false);
+  const [hospitalId, setHospitalId] = useState("");
+  const [timer, setTimer] = useState(12);
 
   const [formData, setFormData] = useState({
     hospitalName: "",
@@ -19,6 +25,29 @@ function HospitalRegisterPage() {
     password: ""
   });
 
+  /* =========================
+     COUNTDOWN EFFECT (FIXED)
+  ========================= */
+  useEffect(() => {
+    if (!showToast) return;
+
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          navigate("/");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [showToast, navigate]);
+
+  /* =========================
+     FORM CHANGE
+  ========================= */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -26,6 +55,9 @@ function HospitalRegisterPage() {
     });
   };
 
+  /* =========================
+     SUBMIT
+  ========================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -58,12 +90,10 @@ function HospitalRegisterPage() {
 
       const result = await response.json();
 
-      // ✅ SHOW HOSPITAL ID IN POPUP
-      alert(
-        `Hospital registered successfully!\n\nYour Hospital ID: ${result.hospital_id}\nPlease save this ID for login.`
-      );
-
-      navigate("/");
+      // ✅ SHOW SUCCESS TOAST
+      setHospitalId(result.hospital_id);
+      setTimer(12);
+      setShowToast(true);
 
     } catch (error) {
       console.error(error);
@@ -71,92 +101,141 @@ function HospitalRegisterPage() {
     }
   };
 
+  /* =========================
+     UI
+  ========================= */
   return (
-    <div className="hospital-container">
-      <h2>Hospital Registration</h2>
-      <p>Register your hospital to access DocRounds</p>
+    <div
+      className="hospital-register-page"
+      style={{
+        background: `linear-gradient(rgba(15,23,42,0.70),
+                     rgba(15,23,42,0.70)),
+                     url(${hospitalBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed"
+      }}
+    >
 
-      <form className="hospital-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="hospitalName"
-          placeholder="Hospital Name"
-          onChange={handleChange}
-          required
-        />
+      {/* HEADER */}
+      <header className="main-header">
+        DocRounds
+      </header>
 
-        <input
-          type="tel"
-          name="managerNumber"
-          placeholder="Hospital Manager Mobile Number"
-          onChange={handleChange}
-          required
-        />
+      {/* CONTENT */}
+      <div className="hospital-container">
+        <h2>Hospital Registration</h2>
+        <p>Register your hospital to access DocRounds</p>
 
-        <textarea
-          name="location"
-          placeholder="Hospital Location / Address"
-          rows="3"
-          onChange={handleChange}
-          required
-        />
+        <form className="hospital-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="hospitalName"
+            placeholder="Hospital Name"
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Create Password"
-          onChange={handleChange}
-          required
-        />
+          <input
+            type="tel"
+            name="managerNumber"
+            placeholder="Hospital Manager Mobile Number"
+            onChange={handleChange}
+            required
+          />
 
-        <label>Hospital License Upload</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setLicenseFile(e.target.files[0])}
-          required
-        />
+          <textarea
+            name="location"
+            placeholder="Hospital Location / Address"
+            rows="3"
+            onChange={handleChange}
+            required
+          />
 
-        <label>Hospital Image Upload</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setHospitalFile(e.target.files[0])}
-          required
-        />
+          <input
+            type="password"
+            name="password"
+            placeholder="Create Password"
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="number"
-          name="icuWards"
-          placeholder="Number of ICU Wards"
-          onChange={handleChange}
-          required
-        />
+          <label>Hospital License Upload</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setLicenseFile(e.target.files[0])}
+            required
+          />
 
-        <input
-          type="number"
-          name="generalWards"
-          placeholder="Number of General Wards"
-          onChange={handleChange}
-          required
-        />
+          <label>Hospital Image Upload</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setHospitalFile(e.target.files[0])}
+            required
+          />
 
-        <select name="medicalShop" onChange={handleChange}>
-          <option value="yes">Medical Shop Attached - Yes</option>
-          <option value="no">Medical Shop Attached - No</option>
-        </select>
+          <input
+            type="number"
+            name="icuWards"
+            placeholder="Number of ICU Wards"
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="text"
-          name="ownerAadhar"
-          placeholder="Owner Aadhaar Number"
-          maxLength="12"
-          onChange={handleChange}
-          required
-        />
+          <input
+            type="number"
+            name="generalWards"
+            placeholder="Number of General Wards"
+            onChange={handleChange}
+            required
+          />
 
-        <button type="submit">Register Hospital</button>
-      </form>
+          <select name="medicalShop" onChange={handleChange}>
+            <option value="yes">Medical Shop Attached - Yes</option>
+            <option value="no">Medical Shop Attached - No</option>
+          </select>
+
+          <input
+            type="text"
+            name="ownerAadhar"
+            placeholder="Owner Aadhaar Number"
+            maxLength="12"
+            onChange={handleChange}
+            required
+          />
+
+          <button type="submit">Register Hospital</button>
+        </form>
+      </div>
+
+      {/* SUCCESS TOAST */}
+      {showToast && (
+        <div className="success-toast">
+          <h4>✅ Registration Successful</h4>
+
+          <p>
+            Your hospital is successfully registered !!
+            <br />
+            Admin will contact you as soon as possible.
+          </p>
+
+          <div className="toast-id">
+            Note your ID : <strong>{hospitalId}</strong>
+          </div>
+
+          <div className="toast-timer">
+            Redirecting in {timer}s...
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <footer className="main-footer">
+        © 2025 DocRounds. All Rights Reserved.
+      </footer>
+
     </div>
   );
 }

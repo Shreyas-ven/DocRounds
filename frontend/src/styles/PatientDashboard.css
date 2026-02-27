@@ -90,3 +90,54 @@ hr {
 .pdf-btn:hover {
   background: #c0392b;
 }
+
+.report-card {
+  width: 420px;                 /* SAME AS PATIENT CARD */
+  margin-top: 22px;
+  background: rgb(188, 226, 227);
+  border-radius: 14px;
+  padding: 22px 26px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  animation: fadeIn 0.3s ease-in-out;
+  border-left: 5px solid #2a5298; /* Accent strip */
+}
+
+.report-card h3 {
+  margin: 0 0 18px 0;
+  font-size: 18px;
+  color: #1e3c72;
+  text-align: center;
+  border-bottom: 1px solid #ade4df;
+  padding-bottom: 10px;
+}
+
+.report-card .row {
+  margin: 12px 0;
+  font-size: 15px;
+}
+
+.report-card .row span {
+  color: #666;
+  font-weight: 500;
+}
+
+.report-card .row b {
+  color: #222;
+  font-weight: 600;
+}
+
+/* Highlight doctor name */
+.report-card .row:first-of-type b {
+  color: #2a5298;
+}
+
+/* Highlight remarks */
+.report-card .row:nth-of-type(2) b {
+  color: #444;
+}
+
+/* Timestamp style */
+.report-card .row:last-of-type b {
+  font-size: 13px;
+  color: #888;
+}

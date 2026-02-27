@@ -1,16 +1,53 @@
+/* ================= DASHBOARD ================= */
+
 .admin-dashboard {
-  padding: 30px;
   min-height: 100vh;
-  background: linear-gradient(to right, #eef2f7, #f8fafc);
+  display: flex;
+  flex-direction: column;
+
+  padding: 30px;
+  font-family: "Segoe UI", sans-serif;
+  color: white;
+}
+
+/* ================= HEADER ================= */
+
+.dash-header {
+  text-align: center;
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+
+  margin-bottom: 35px;
+
+  color: #ffffff;
+
+  /* glass effect */
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+
+  padding: 18px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(255,255,255,0.15);
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+
+  animation: fadeDown 0.6s ease;
+}
+
+.section {
+  margin-top: 40px;
+  flex: 0;
 }
 
 .admin-dashboard h1 {
   font-size: 32px;
   margin-bottom: 20px;
-  color: #1e293b;
+  color: #ffffff;
 }
 
-/* Section Styling */
+/* Section */
 .section {
   margin-top: 40px;
 }
@@ -18,51 +55,58 @@
 .section-title {
   font-size: 22px;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .pending-title {
-  color: #b45309;
+  color: #fbbf24;
 }
 
 .approved-title {
-  color: #065f46;
+  color: #4ade80;
 }
 
-/* Grid */
+/* GRID */
 .hospital-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  gap: 22px;
 }
 
-/* Card */
+/* ================= GLASS CARD ================= */
+
 .hospital-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
   padding: 22px;
   border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
   transition: all 0.3s ease;
   position: relative;
+  color: white;
 }
 
+/* ❌ REMOVE OLD RED OVERRIDE */
+/* DELETE THIS IF EXISTS
 .hospital-card {
   background: red !important;
-  color: white !important;
 }
-
+*/
 
 .hospital-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+  box-shadow: 0 16px 35px rgba(0,0,0,0.5);
 }
 
+/* CARD TITLE */
 .hospital-card h3 {
   font-size: 18px;
-  color: #0f172a;
+  color: #ffffff;
   margin-bottom: 10px;
 }
 
-/* Status Badge */
+/* STATUS BADGE */
 .status {
   display: inline-block;
   padding: 6px 14px;
@@ -73,43 +117,74 @@
 }
 
 .status.pending {
-  background: #fde68a;
-  color: #92400e;
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  border: 1px solid #fbbf24;
 }
 
 .status.approved {
-  background: #bbf7d0;
-  color: #065f46;
+  background: rgba(74,222,128,0.15);
+  color: #4ade80;
+  border: 1px solid #4ade80;
 }
 
-/* Buttons */
+/* BUTTON */
 .action-btn {
   width: 100%;
   padding: 10px;
   border: none;
   border-radius: 10px;
-  background: #2563eb;
+  background: linear-gradient(135deg,#2563eb,#1d4ed8);
   color: white;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .action-btn:hover {
-  background: #1d4ed8;
-  transform: scale(1.03);
+  transform: scale(1.04);
+  box-shadow: 0 6px 18px rgba(37,99,235,0.5);
 }
 
 .approved-btn {
-  background: #16a34a;
+  background: linear-gradient(135deg,#22c55e,#15803d);
 }
 
 .approved-btn:hover {
-  background: #15803d;
+  box-shadow: 0 6px 18px rgba(34,197,94,0.5);
 }
 
-/* Empty text */
+/* EMPTY TEXT */
 .empty-text {
   font-size: 14px;
-  color: #6b7280;
+  color: #cbd5e1;
+}
+
+/* ================= FOOTER ================= */
+
+.dash-footer {
+  margin-top: auto;   /* pushes footer to bottom */
+  text-align: center;
+
+  padding: 18px;
+  margin-top: 50px;
+
+  font-size: 14px;
+  color: #cbd5e1;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

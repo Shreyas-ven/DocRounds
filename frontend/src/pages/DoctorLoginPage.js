@@ -1,14 +1,35 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
+import bgImage from "../assets/login-bg.webp";
 
 function DoctorLoginPage() {
   const navigate = useNavigate();
 
   const [doctorId, setDoctorId] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
+  // ✅ Toast State
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "" // success | error
+  });
+
+  /* =========================
+     SHOW TOAST FUNCTION
+  ========================= */
+  const showToast = (message, type = "error") => {
+    setToast({ show: true, message, type });
+
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "" });
+    }, 3000);
+  };
+
+  /* =========================
+     LOGIN SUBMIT
+  ========================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,54 +46,88 @@ function DoctorLoginPage() {
       const data = await res.json();
 
       if (!data.success) {
-        setError(data.message);
+        showToast(data.message || "Invalid credentials", "error");
         return;
       }
 
-      // ✅ Save doctor session
+      // ✅ Save login data
       localStorage.setItem("doctorId", data.doctorId);
       localStorage.setItem("doctorMongoId", data.doctorMongoId);
       localStorage.setItem("hospitalId", data.hospitalId);
       localStorage.setItem("doctorName", data.name);
 
-      // ✅ Redirect to dashboard
-      navigate("/doctor-dashboard");
+      showToast("Login successful!", "success");
+
+      setTimeout(() => {
+        navigate("/doctor-dashboard");
+      }, 1200);
 
     } catch (err) {
-      setError("Server error. Try again.");
+      showToast("Server error. Try again.", "error");
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Doctor Login</h2>
-      <p>Access doctor dashboard</p>
+    <div
+      className="doctor-page"
+      style={{
+        background: `linear-gradient(rgba(15,23,42,0.65),
+             rgba(15,23,42,0.65)),
+             url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed"
+      }}
+    >
 
-      {error && <p className="error-msg">{error}</p>}
+      {/* HEADER */}
+      <header className="main-header">
+        DocRounds
+      </header>
 
-      <form className="login-box" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Doctor ID (DOC-XXXXXX)"
-          value={doctorId}
-          onChange={(e) => setDoctorId(e.target.value)}
-          required
-        />
+      {/* LOGIN CONTENT */}
+      <div className="login-container">
+        <h2>Doctor Login</h2>
+        <p>Access doctor dashboard</p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <form className="login-box" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Doctor ID (DOC-XXXXXX)"
+            value={doctorId}
+            onChange={(e) => setDoctorId(e.target.value)}
+            required
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-      <button className="back-btn" onClick={() => navigate("/")}>
-        ← Back to Home
-      </button>
+          <button type="submit">Login</button>
+        </form>
+
+        <button className="back-btn" onClick={() => navigate("/")}>
+          ← Back to Home
+        </button>
+      </div>
+
+      {/* ✅ DYNAMIC TOAST */}
+      {toast.show && (
+        <div className={`login-toast ${toast.type}`}>
+          {toast.type === "success" ? "✅ " : "❌ "}
+          {toast.message}
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <footer className="main-footer">
+        © 2025 DocRounds. All Rights Reserved.
+      </footer>
+
     </div>
   );
 }

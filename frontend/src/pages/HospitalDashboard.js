@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/HospitalDashboard.css";
+import dashBg from "../assets/hospital-dash.webp";
 
 function HospitalDashboard() {
   const hospitalId = localStorage.getItem("hospitalId");
@@ -38,7 +39,6 @@ function HospitalDashboard() {
     credentials: ""
   });
 
-  
 
 
   // ================= FETCH HOSPITAL =================
@@ -142,7 +142,17 @@ function HospitalDashboard() {
   if (!hospital) return <p className="loading">Loading hospital details...</p>;
 
   return (
-    <div className="dashboard-container">
+    <div
+        className="dashboard-container"
+        style={{
+          background: `linear-gradient(rgba(15,23,42,0.75),
+                 rgba(15,23,42,0.85)),
+                 url(${dashBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed"
+      }}
+    >
 
       {/* ===== HEADER ===== */}
       <div className="dashboard-header">
